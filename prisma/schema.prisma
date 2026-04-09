@@ -1,0 +1,154 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+enum AuctionStatus {
+  DRAFT
+  ACTIVE
+  ENDED
+  CANCELLED
+  CLOSED_UNSOLD
+  COMPLETED
+}
+
+enum UserRole {
+  BUYER
+  SELLER
+}
+
+enum AuctionType {
+  ENGLISH
+  DUTCH
+  SEALED_BID
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCESS
+  FAILED
+  REFUNDED
+  PARTIALLY_REFUNDED
+}
+
+enum PaymentMethod {
+  CREDIT_CARD
+  DEBIT_CARD
+  BANK_TRANSFER
+  PROMPTPAY
+  CASH_ON_DELIVERY
+  WALLET
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  password  String
+  email     String    @unique
+  firstname String
+  lastname  String
+  phone     String    @unique
+  role      UserRole  @default(BUYER)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt @db.Timestamp(0)
+  products  Product[]
+  addresses Address[]
+  bids      Bid[]
+}
+
+model Category {
+  id          Int       @id @default(autoincrement())
+  name        String    @unique
+  description String?
+  imageUrl    String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt @db.Timestamp(0)
+  products    Product[]
+}
+
+model Address {
+  id         Int       @id @default(autoincrement())
+  label      String?
+  street     String
+  city       String?
+  state      String?
+  postalCode String
+  country    String
+  isDefault  Boolean   @default(false)
+  user       User      @relation(fields: [userId], references: [id])
+  userId     Int
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt @db.Timestamp(0)
+  auctions   Auction[]
+}
+
+model Product {
+  id          String    @id @default(cuid())
+  name        String
+  description String?
+  imageUrl    String?
+  category    Category? @relation(fields: [categoryId], references: [id])
+  categoryId  Int?
+  sellers     User?     @relation(fields: [sellerId], references: [id])
+  sellerId    Int?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt @db.Timestamp(0)
+  auctions    Auction[]
+}
+
+model Auction {
+  id                String        @id @default(cuid())
+  product           Product       @relation(fields: [productId], references: [id])
+  productId         String
+  startTime         DateTime
+  endTime           DateTime
+  startingPrice     Decimal       @db.Decimal(10, 2)
+  reservePrice      Decimal?      @db.Decimal(10, 2)
+  minIncrement      Decimal       @db.Decimal(10, 2)
+  status            AuctionStatus @default(DRAFT)
+  type              AuctionType   @default(ENGLISH)
+  shippingAddress   Address?      @relation(fields: [shippingAddressId], references: [id])
+  shippingAddressId Int?
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt @db.Timestamp(0)
+  bids              Bid[]
+  payments          Payment[]
+}
+
+model Bid {
+  id        String    @id @default(cuid())
+  bidder    User      @relation(fields: [bidderId], references: [id])
+  bidderId  Int
+  auctionId String
+  amount    Decimal   @db.Decimal(10, 2)
+  isWinning Boolean   @default(false)
+  createdAt DateTime  @default(now())
+  auctions  Auction[]
+
+  // for faster look up?
+   @@index([auctionId])
+  @@index([bidderId])
+}
+
+model Payment {
+  id               String        @id @default(cuid())
+  auction          Auction?      @relation(fields: [auctionId], references: [id])
+  auctionId        String?
+  amount           Decimal       @db.Decimal(10, 2)
+  currency         String        @db.Char(3)
+  method           PaymentMethod
+  status           PaymentStatus @default(PENDING)
+  gatewayReference String?       @unique
+  gatewayResponse  Json?
+  paidAt           DateTime?
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt @db.Timestamp(0)
+}
