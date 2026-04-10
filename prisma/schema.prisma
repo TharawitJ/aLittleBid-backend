@@ -52,6 +52,7 @@ enum PaymentMethod {
 model User {
   id        Int       @id @default(autoincrement())
   password  String
+  username  String    @unique
   email     String    @unique
   firstname String
   lastname  String
@@ -91,17 +92,31 @@ model Address {
 }
 
 model Product {
-  id          String    @id @default(cuid())
-  name        String
-  description String?
-  imageUrl    String?
-  category    Category? @relation(fields: [categoryId], references: [id])
-  categoryId  Int?
-  sellers     User?     @relation(fields: [sellerId], references: [id])
-  sellerId    Int?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt @db.Timestamp(0)
-  auctions    Auction[]
+  id             String        @id @default(cuid())
+  name           String
+  description    String?
+  imageUrl       String?
+  category       Category?     @relation(fields: [categoryId], references: [id])
+  categoryId     Int?
+  sellers        User?         @relation(fields: [sellerId], references: [id])
+  sellerId       Int?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt @db.Timestamp(0)
+  auctions       Auction[]
+  productImage   ProductImage? @relation(fields: [productImageId], references: [id])
+  productImageId Int?
+}
+
+model ProductImage {
+  id       Int       @id @default(autoincrement())
+  products Product[]
+  images   Image[]
+}
+
+model Image {
+  id             Int           @id @default(autoincrement())
+  productImage   ProductImage? @relation(fields: [productImageId], references: [id])
+  productImageId Int?
 }
 
 model Auction {
@@ -119,22 +134,22 @@ model Auction {
   shippingAddressId Int?
   createdAt         DateTime      @default(now())
   updatedAt         DateTime      @updatedAt @db.Timestamp(0)
-  bids              Bid[]
   payments          Payment[]
+  bids              Bid[]
 }
 
 model Bid {
-  id        String    @id @default(cuid())
-  bidder    User      @relation(fields: [bidderId], references: [id])
+  id        String   @id @default(cuid())
+  bidder    User     @relation(fields: [bidderId], references: [id])
   bidderId  Int
-  auctionId String
-  amount    Decimal   @db.Decimal(10, 2)
-  isWinning Boolean   @default(false)
-  createdAt DateTime  @default(now())
-  auctions  Auction[]
+  auction   Auction? @relation(fields: [auctionId], references: [id])
+  auctionId String?
+  amount    Decimal  @db.Decimal(10, 2)
+  isWinning Boolean  @default(false)
+  createdAt DateTime @default(now())
 
-  // for faster look up?
-   @@index([auctionId])
+  // for faster read on joins, but eats storage
+  @@index([auctionId])
   @@index([bidderId])
 }
 
