@@ -1,8 +1,10 @@
 import express from "express";
-import errorHandler from "./middlewares/errorHandler.middleware.js";
 import cors from "cors";
-import notFound from "./middlewares/notFound.middleware.js";
 import userRoutes from "./routes/user.route.js";
+// import errorHandler from "./middlewares/errorHandler.middleware.js";
+// import notFound from "./middlewares/notFound.middleware.js";
+
+
 
 const app = express(); 
 const PORT = 3000;
