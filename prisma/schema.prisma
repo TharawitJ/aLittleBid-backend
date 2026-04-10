@@ -52,6 +52,7 @@ enum PaymentMethod {
 model User {
   id        Int       @id @default(autoincrement())
   password  String
+  username    String    @unique
   email     String    @unique
   firstname String
   lastname  String
