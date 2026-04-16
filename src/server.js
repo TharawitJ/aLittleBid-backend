@@ -1,10 +1,9 @@
 import express from "express";
 import cors from "cors";
 import userRoutes from "./routes/user.route.js";
-// import errorHandler from "./middlewares/errorHandler.middleware.js";
-// import notFound from "./middlewares/notFound.middleware.js";
-
-
+import notFound from "./middlewares/notFound.middleware.js";
+import errorHandler from "./middlewares/errorHandler.middleware.js";
+import productRoutes from "./routes/product.route.js";
 
 const app = express(); 
 const PORT = 3500;
@@ -20,10 +19,11 @@ app.use(cors({
 app.use(express.json());
 
 app.use('/api/users', userRoutes);
+app.use('/api/products', productRoutes);
 
-// app.use(notFound);
+app.use(notFound);
 
-// app.use(errorHandler);
+app.use(errorHandler);
 
 app.listen(PORT, () => {
     console.log(`server is running at http://localhost:${PORT}`);
