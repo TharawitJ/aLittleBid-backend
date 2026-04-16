@@ -3,7 +3,7 @@ import { faker } from "@faker-js/faker";
 
 async function main() {
        await prisma.user.createMany({
-        data: Array.from({ length: 5 }).map(() => ({
+        data: Array.from({ length: 10 }).map(() => ({
             firstname: faker.person.firstName(),
             lastname: faker.person.lastName(),
             username: faker.internet.username(),
@@ -13,7 +13,7 @@ async function main() {
         })),
         });
 
-          await prisma.address.createMany({
+        await prisma.address.createMany({
         data: Array.from({length: 11}).map(()=> (
             {
               label: Math.random() > 0.3 ? "Home" : "Work",

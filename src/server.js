@@ -7,7 +7,7 @@ import userRoutes from "./routes/user.route.js";
 
 
 const app = express(); 
-const PORT = 3000;
+const PORT = 3500;
 
 console.log("Hit the route!");
 
