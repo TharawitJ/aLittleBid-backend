@@ -1,15 +1,14 @@
 import express from "express";
-import { getAllProductsController } from "../controllers/product.controller";
+import { createProductController, deleteProductController, getAllProductsController, getProductController } from "../controllers/product.controller.js";
 
 const productRoutes = express.Router();
 
 // TO DO validate data, check auth
 productRoutes.get('', getAllProductsController);
+productRoutes.get('/:id', getProductController);
+productRoutes.post('/:userId', createProductController);
+// productRoutes.patch('/:id/addresses/:addressId', updateAddressController);
 
-// productRoutes.get('/:id', getUserController);
-// productRoutes.delete('/:id', deleteUserController);
-
-// productRoutes.patch('/:id/addresses/:addressId', updateAddressController)
-// productRoutes.post('/:id/addresses/', createAddressController)
+productRoutes.delete('/:id', deleteProductController);
 
 export default productRoutes;

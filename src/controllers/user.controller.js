@@ -56,10 +56,10 @@ export async function updateAddressController(req, res, next) {
 }
 
 export async function createAddressController(req, res, next) {
-    const id = Number(req.params.id);
+    const userId = Number(req.params.id);
     
   try {
-    const responses = await createAddress(id, req.body);
+    const responses = await createAddress(userId, req.body);
     res.status(201).json({
       message: "User address created successfully",
       responses,
