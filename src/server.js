@@ -4,6 +4,7 @@ import userRoutes from "./routes/user.route.js";
 import notFound from "./middlewares/notFound.middleware.js";
 import errorHandler from "./middlewares/errorHandler.middleware.js";
 import productRoutes from "./routes/product.route.js";
+import authRoute from "./routes/auth.route.js";
 
 const app = express(); 
 const PORT = 3000;
@@ -18,8 +19,10 @@ app.use(cors({
 
 app.use(express.json());
 
+app.use("/api/auth", authRoute);
 app.use('/api/users', userRoutes);
 app.use('/api/products', productRoutes);
+
 
 app.use(notFound);
 

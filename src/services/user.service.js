@@ -1,5 +1,14 @@
 import prisma from "../lib/prismaClient.js";
 import createError from "http-errors";
+import { sanitizeData } from "../utils/helpers.js";
+
+const USER_DATA_FIELDS = [
+  "username",
+  "email",  
+  "firstname", 
+  "lastname", 
+  "phone"    
+];
 
 export async function getAllUsers() {
   const result = await prisma.user.findMany();
@@ -19,6 +28,28 @@ export async function getUserById(id) {
 export async function deleteUserById(id) {
   const result = await prisma.user.delete({
     where: { id },
+  });
+
+  return result;
+}
+
+export async function updateUserById(id, authenticatedId, data) {
+  const user = await getUserById(id);
+  if (!user) throw createError(404, "Invalid user");
+
+  if (id !== authenticatedId) {
+    throw createError(403, "Forbidden: You cannot edit other users.");
+  }
+
+  const updatedUserData = sanitizeData(data, USER_DATA_FIELDS);
+
+   if (Object.keys(updatedUserData).length === 0) {
+      throw createError(400, "No valid update fields provided");
+    }
+
+  const result = await prisma.user.update({
+    where: { id: id },
+    data: updatedUserData,
   });
 
   return result;
@@ -82,10 +113,4 @@ export async function updateUserAddress(userId, addressId, data) {
   return result;
 }
 
-const sanitizeData = (data, allowedFields) => {
-  return Object.fromEntries( // make into object
-    Object.entries(data).filter( // make into entries [ [name: Ting] , etc. ]
-      ([key, value]) => allowedFields.includes(key) && value !== undefined
-    )
-  );
-};
+
