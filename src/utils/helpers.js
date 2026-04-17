@@ -26,3 +26,19 @@ export async function validateProductOwnerAndFetch(productId, userId) {
   if (product.sellerId !== userId) throw createError(403, "Access denied: Product owner permissions required.");
   return product;
 }
+
+export function isBiddableDuration(auction) {
+  const now = new Date();
+
+  if (auction.status !== "ACTIVE") {
+    throw createError(400, `This auction is currently ${auction.status.toLowerCase()}.`);
+  }
+
+  if (now < auction.startTime) {
+    throw createError(400, "This auction hasn't started yet.");
+  }
+
+  if (now > auction.endTime) {
+    throw createError(400, "This auction has already ended.");
+  }
+}

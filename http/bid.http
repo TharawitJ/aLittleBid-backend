@@ -14,23 +14,23 @@ content-type: application/json
 Authorization: Bearer 
 
 {
-  "bidderId": 63,
-  "auctionId": 2, 
-  "amount": 950
+  "bidderId": 1000,
+  "auctionId": 5, 
+  "amount": 2000
 }
 
-###  get all bid
+###  get all bids
 GET  {{BASE_URL}}/bids
 content-type: application/json
 Authorization: Bearer 
 
 ###  get bid by id
-GET  {{BASE_URL}}/bids/4
+GET  {{BASE_URL}}/bids/cmo2quvvz0000muyzswdp4eh3
 content-type: application/json
 Authorization: Bearer 
 
 ###  DELETE bid by id
-DELETE  {{BASE_URL}}/bids/2
+DELETE  {{BASE_URL}}/bids/cmo2r3yls0001muyzlgxs5mke
 content-type: application/json
 Authorization: Bearer 
 

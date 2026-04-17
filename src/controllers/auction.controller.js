@@ -43,7 +43,7 @@ export async function createAuctionController(req, res, next) {
   const productId = req.body.productId;
     // const { id } = req.user;
     // CHANGE HERE AFTER AUTH
-  const userId = 21;
+  const userId = 3;
 
   try {
     const responses = await createUserAuction(userId, productId, req.body);

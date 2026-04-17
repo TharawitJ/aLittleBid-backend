@@ -2,6 +2,7 @@ import prisma from "../lib/prismaClient.js";
 import createError from "http-errors";
 import { getUserById } from "./user.service.js";
 import { getAuctionById } from "./auction.service.js";
+import { isBiddableDuration, sanitizeData } from "../utils/helpers.js";
 
 const BID_FIELDS = [
   "bidderId",
@@ -55,9 +56,13 @@ export async function placeBid(userId, auctionId, data) {
   // check auction exist
   const auction = await getAuctionById(auctionId);
 
-  // guard against place bid when startTime is not arrived
-  // guard against place on non-active bid
-  const result = await createBid(data);
+  // guard on time
+  isBiddableDuration(auction);
+  
+  const bidData = sanitizeData(data, BID_FIELDS);
+  bidData.bidderId = userId;
+  
+  const result = await createBid(bidData);
   return result;
 }
 
