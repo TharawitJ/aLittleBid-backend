@@ -1,6 +1,6 @@
 import prisma from "../lib/prismaClient.js";
 import createError from "http-errors";
-import { getUserById } from "./user.service.js";
+import { sanitizeData, validateAndFetchUser } from "../utils/helpers.js";
 
 const PRODUCT_FIELDS = [
   "name", "description", "categoryId"
@@ -32,10 +32,11 @@ export async function deleteProductById(id) {
 }
 
 export async function createProduct(userId, data) {
-  const user = await getUserById(userId);
-  if (!user) throw createError(404, "Invalid user");
+  const user = await validateAndFetchUser(userId);
 
-  if (user.role !== "SELLER") throw createError(404, "Invalid permission to add product.");
+  validateSellerRole(user);
+
+  await getValidCategory(data.categoryId);
 
   const productData = sanitizeData(data, PRODUCT_FIELDS);
   productData.sellerId = user.id;
@@ -47,23 +48,28 @@ export async function createProduct(userId, data) {
   return result;
 }
 
-export async function updateProduct(userId, data) {
-   // check if user exist
-  const user = await getUserById(userId);
-  if (!user) throw createError(404, "Invalid user");
-
-  // check if the user role is SELLER
-  const newAddressData = sanitizeData(data, PRODUCT_FIELDS);
-  console.log(newAddressData);
-  newAddressData.userId = userId;
+export async function updateProduct(id, userId, data) {
+  const user = await validateAndFetchUser(userId);
+  validateSellerRole(user);
 
   // check if the user owns the product
+  const product = await getProductById(id)
+  if (product.sellerId !== userId) throw createError(403, "Access denied: Product owner permissions required.");
+  
+  const updateProductData = sanitizeData(data, PRODUCT_FIELDS);
 
-  const result = prisma.product.create({
-    data: newAddressData,
+  const result = prisma.product.update({
+    where: {id},
+    data: updateProductData,
   });
 
   return result;
+}
+
+export function validateSellerRole(user) {
+    if (user.role !== "SELLER") {
+        throw createError(403, "Access denied: Seller permissions required.");
+    }
 }
 
 ////////////////////////////////////////////////////////
@@ -72,4 +78,10 @@ export async function updateProduct(userId, data) {
 export async function getAllCategories() {
   const result = await prisma.category.findMany();
   return result;
+}
+
+export async function getValidCategory(id) {
+    const category = await prisma.category.findUnique({where: {id}});
+    if (!category) throw createError(404, "Category not found");
+    return category;
 }

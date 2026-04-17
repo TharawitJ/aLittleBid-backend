@@ -39,7 +39,7 @@ userRoutes.get('/:id', getUserController);
 
 /**
  * @openapi
- * /users/{id}
+ * /users/{id}:
  *   patch:
  *     summary: Update a user data
  *     tags: [Users]
