@@ -20,6 +20,11 @@ Authorization: Bearer
    "sellerId": 8
 }
 
+###  Get all products
+GET  {{BASE_URL}}/products
+content-type: application/json
+Authorization: Bearer 
+
 ###  Get all categories
 GET  {{BASE_URL}}/products/categories
 content-type: application/json

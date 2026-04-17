@@ -1,4 +1,4 @@
-import { deleteProductById, getAllCategories, getAllProducts, getProductById, updateProduct } from "../services/product.service.js";
+import { createProduct, deleteProductById, getAllCategories, getAllProducts, getProductById, updateProduct } from "../services/product.service.js";
 
 
 export async function getAllProductsController(req, res, next) {
@@ -42,7 +42,7 @@ export async function deleteProductController(req, res, next) {
 
 export async function createProductController(req, res, next) {
   // const { id } = req.user;
-  
+  const id = 10;
   try {
     const responses = await createProduct(id, req.body);
     res.status(201).json({

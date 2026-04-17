@@ -1,8 +1,9 @@
 import prisma from "../lib/prismaClient.js";
 import createError from "http-errors";
+import { getUserById } from "./user.service.js";
 
 const PRODUCT_FIELDS = [
-  "name", "description", "categoryId", "sellerId"
+  "name", "description", "categoryId"
 ];
 
 export async function getAllProducts() {
@@ -36,15 +37,11 @@ export async function createProduct(userId, data) {
 
   if (user.role !== "SELLER") throw createError(404, "Invalid permission to add product.");
 
-  const productData = {}
-  productData.userId = user.id;
-  
-  sanitizeData(data, PRODUCT_FIELDS);
-  console.log(newAddressData);
-
+  const productData = sanitizeData(data, PRODUCT_FIELDS);
+  productData.sellerId = user.id;
 
   const result = prisma.product.create({
-    data: newAddressData,
+    data: productData,
   });
 
   return result;
