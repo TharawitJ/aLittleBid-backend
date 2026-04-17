@@ -63,10 +63,20 @@ export async function deleteAuctionById(id) {
 }
 
 /// SPECIFIC SERVICE
+export async function getAuctionByProductId(id) {
+  const result = await prisma.auction.findFirst({
+    where: { productId: id },
+  });
+  return result;
+}
+
 export async function createUserAuction(userId, productId, data) {
   const user = await validateAndFetchUser(userId);
   validateSellerRole(user);
   await validateProductOwnerAndFetch(productId, userId);
+
+  const auctionExist = await getAuctionByProductId(productId);
+  if (auctionExist) throw createError(403, "Auction already exist for this product");
 
   const auctionData = sanitizeData(data, AUCTION_FIELDS);
   const result = await createAuction(auctionData);
