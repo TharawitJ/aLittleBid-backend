@@ -41,9 +41,8 @@ export async function deleteProductController(req, res, next) {
 }
 
 export async function createProductController(req, res, next) {
-    const id = Number(req.params.id);
-    // const { id } = req.user;
-    
+  // const { id } = req.user;
+  
   try {
     const responses = await createProduct(id, req.body);
     res.status(201).json({

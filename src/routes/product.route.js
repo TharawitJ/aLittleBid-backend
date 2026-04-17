@@ -59,4 +59,6 @@ productRoutes.get('/:id', getProductController);
  */
 productRoutes.delete('/:id', deleteProductController);
 
+productRoutes.post('', createProductController);
+
 export default productRoutes;
