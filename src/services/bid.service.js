@@ -1,8 +1,16 @@
 import prisma from "../lib/prismaClient.js";
 import createError from "http-errors";
+import { getUserById } from "./user.service.js";
+import { getAuctionById } from "./auction.service.js";
 
 const BID_FIELDS = [
-  "name", "description", "categoryId"
+  "bidderId",
+  "auctionId", 
+  "amount"
+];
+
+const UPDATE_BID_FIELDS = [
+  "isWinning"
 ];
 
 export async function createBid(data) {
@@ -12,7 +20,7 @@ export async function createBid(data) {
   return result;
 }
 
-export async function getAllBid() {
+export async function getAllBids() {
   const result = await prisma.bid.findMany();
   return result;
 }
@@ -38,4 +46,21 @@ export async function deleteBidById(id) {
     where: { id }
   });
   return result;
+}
+
+// SPECIFIC BID SERVICE
+export async function placeBid(userId, auctionId, data) {
+  // check user exist
+   const user = await getUserById(userId);
+  // check auction exist
+  const auction = await getAuctionById(auctionId);
+
+  // guard against place bid when startTime is not arrived
+  // guard against place on non-active bid
+  const result = await createBid(data);
+  return result;
+}
+
+export async function updateBidStatus(bidId, data) {
+  // update to isWinning
 }

@@ -58,6 +58,15 @@ const options = {
             status:  { type: 'string', example: 'WAITING' }
           }
         },  
+        Bid: {
+          type: 'object',
+          properties: {
+            bidderId: { type: 'int', example: 10 },
+            auctionId: { type: 'datetime', example: "2026-06-06T06:13:00.000Z" },
+            amount: { type: 'decimal', example: 10 },
+            isWinning: {type: 'boolean', example: false}
+          }
+        },  
       }
     },
   },

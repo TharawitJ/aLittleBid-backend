@@ -1,6 +1,7 @@
 import prisma from "../lib/prismaClient.js";
 import createError from "http-errors";
-import { sanitizeData, validateAndFetchUser, validateSellerRole } from "../utils/helpers.js";
+import { sanitizeData, validateSellerRole } from "../utils/helpers.js";
+import { getUserById } from "./user.service.js";
 
 const PRODUCT_FIELDS = [
   "name", "description", "categoryId"
@@ -32,7 +33,7 @@ export async function deleteProductById(id) {
 }
 
 export async function createProduct(userId, data) {
-  const user = await validateAndFetchUser(userId);
+  const user = await getUserById(userId);
 
   validateSellerRole(user);
 
@@ -49,7 +50,7 @@ export async function createProduct(userId, data) {
 }
 
 export async function updateProduct(id, userId, data) {
-  const user = await validateAndFetchUser(userId);
+  const user = await getUserById(userId);
   validateSellerRole(user);
 
   // check if the user owns the product

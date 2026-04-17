@@ -1,0 +1,44 @@
+@BASE_URL = http://localhost:3000/api
+### Login
+POST {{BASE_URL}}/auth/login 
+content-type: application/json
+
+{
+ "identity" : "tanacom0249@hotmail.com",
+ "password" : "Jammy@1223_3432"
+}
+
+###  Create bid
+POST  {{BASE_URL}}/bids
+content-type: application/json
+Authorization: Bearer 
+
+{
+  "bidderId": 63,
+  "auctionId": 2, 
+  "amount": 950
+}
+
+###  get all bid
+GET  {{BASE_URL}}/bids
+content-type: application/json
+Authorization: Bearer 
+
+###  get bid by id
+GET  {{BASE_URL}}/bids/4
+content-type: application/json
+Authorization: Bearer 
+
+###  DELETE bid by id
+DELETE  {{BASE_URL}}/bids/2
+content-type: application/json
+Authorization: Bearer 
+
+###  Update bid status
+POST  {{BASE_URL}}/bids
+content-type: application/json
+Authorization: Bearer 
+
+{
+    "isWinning": true
+} 

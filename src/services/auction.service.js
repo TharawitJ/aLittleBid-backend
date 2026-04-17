@@ -3,10 +3,10 @@ import createError from "http-errors";
 
 import {
   sanitizeData,
-  validateAndFetchUser,
   validateProductOwnerAndFetch,
   validateSellerRole,
 } from "../utils/helpers.js";
+import { getUserById } from "./user.service.js";
 
 const AUCTION_FIELDS = [
   "productId",
@@ -71,7 +71,7 @@ export async function getAuctionByProductId(id) {
 }
 
 export async function createUserAuction(userId, productId, data) {
-  const user = await validateAndFetchUser(userId);
+  const user = await getUserById(userId);
   validateSellerRole(user);
   await validateProductOwnerAndFetch(productId, userId);
 
@@ -85,7 +85,7 @@ export async function createUserAuction(userId, productId, data) {
 }
 
 export async function updateUserAuction(auctionId, userId, data) {
-  const user = await validateAndFetchUser(userId);
+  const user = await getUserById(userId);
   validateSellerRole(user);
 
   const auction = await getAuctionById(auctionId);

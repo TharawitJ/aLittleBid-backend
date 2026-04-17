@@ -14,12 +14,6 @@ export const sanitizeData = (data, allowedFields) => {
   );
 };
 
-export async function validateAndFetchUser(userId) {
-    const user = await getUserById(userId);
-    if (!user) throw createError(404, "Invalid user");
-    return user;
-}
-
 export function validateSellerRole(user) {
     if (user.role !== "SELLER") {
         throw createError(403, "Access denied: Seller permissions required.");
