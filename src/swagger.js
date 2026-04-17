@@ -37,6 +37,16 @@ const options = {
             sellerId: { type: 'int', example: 8 }
           }
         },
+        User: {
+          type: 'object',
+          properties: {
+            username: { type: 'string', example: 'benjaminbutton' },
+            email: { type: 'string', example: 'egghead@arc.com' },
+            firstname: { type: 'string', example: 'benjamin' },
+            lastname: { type: 'string', example: 'button' },
+            phone:  { type: 'string', example: '0947392909' }
+          }
+        },  
       }
     },
   },
