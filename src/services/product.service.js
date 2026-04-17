@@ -34,10 +34,14 @@ export async function createProduct(userId, data) {
   const user = await getUserById(userId);
   if (!user) throw createError(404, "Invalid user");
 
-  // check if the user role is SELLER
-  const newAddressData = sanitizeData(data, PRODUCT_FIELDS);
+  if (user.role !== "SELLER") throw createError(404, "Invalid permission to add product.");
+
+  const productData = {}
+  productData.userId = user.id;
+  
+  sanitizeData(data, PRODUCT_FIELDS);
   console.log(newAddressData);
-  newAddressData.userId = userId;
+
 
   const result = prisma.product.create({
     data: newAddressData,
@@ -62,5 +66,13 @@ export async function updateProduct(userId, data) {
     data: newAddressData,
   });
 
+  return result;
+}
+
+////////////////////////////////////////////////////////
+// CATEGORY SERVICE
+
+export async function getAllCategories() {
+  const result = await prisma.category.findMany();
   return result;
 }

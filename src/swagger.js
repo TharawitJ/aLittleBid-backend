@@ -27,7 +27,16 @@ const options = {
             country: { type: 'string', example: 'Bangkok' },
             isDefault: { type: 'boolean', example: false }
           }
-        }
+        },
+        Product: {
+          type: 'object',
+          properties: {
+            name: { type: 'string', example: 'Garmin xo' },
+            description: { type: 'string', example: 'excellent dive computer with geolocation tagging' },
+            categoryId: { type: 'int', example: 2 },
+            sellerId: { type: 'int', example: 8 }
+          }
+        },
       }
     },
   },
