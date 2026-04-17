@@ -1,4 +1,4 @@
-import { deleteProductById, getAllProducts, getProductById } from "../services/product.service.js";
+import { deleteProductById, getAllCategories, getAllProducts, getProductById, updateProduct } from "../services/product.service.js";
 
 
 export async function getAllProductsController(req, res, next) {
@@ -41,13 +41,39 @@ export async function deleteProductController(req, res, next) {
 }
 
 export async function createProductController(req, res, next) {
-    const id = Number(req.params.id);
-    // const { id } = req.user;
-    
+  // const { id } = req.user;
+  
   try {
     const responses = await createProduct(id, req.body);
     res.status(201).json({
       message: "Product created successfully",
+      responses,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function updateProductController(req, res, next) {
+  // const { id } = req.user;
+  
+  try {
+    const responses = await updateProduct(id, req.body);
+    res.status(201).json({
+      message: "Product updated successfully",
+      responses,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function getAllCategoriesController(req, res, next) {
+
+  try {
+    const responses = await getAllCategories();
+    res.status(201).json({
+      message: "All categories retrieved successfully",
       responses,
     });
   } catch (error) {

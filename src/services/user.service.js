@@ -102,7 +102,7 @@ export async function updateUserAddress(userId, addressId, data) {
 
   // get address
   const address = await getAddressById(addressId);
-  if (!address) throw createError(404, "Invalid address");
+  if (!address) throw createError(404, "Address not exist");
   if (address.userId !== userId)
     throw createError(404, "Cannot edit other user's address");
 
