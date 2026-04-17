@@ -53,7 +53,7 @@ productRoutes.get('/:id', getProductController);
  * @openapi
  * /products/{id}:
  *   delete:
- *     summary: Get product by ID
+ *     summary: Delete product by ID
  *     tags: [Products]
  *     parameters:
  *       - in: path

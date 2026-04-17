@@ -6,6 +6,7 @@ import errorHandler from "./middlewares/errorHandler.middleware.js";
 import productRoutes from "./routes/product.route.js";
 import swaggerUi from 'swagger-ui-express';
 import { swaggerSpec } from './swagger.js';
+import authRoute from "./routes/auth.route.js";
 
 const app = express(); 
 const PORT = 3000;

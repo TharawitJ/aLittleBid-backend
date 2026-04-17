@@ -33,8 +33,7 @@ const options = {
           properties: {
             name: { type: 'string', example: 'Garmin xo' },
             description: { type: 'string', example: 'excellent dive computer with geolocation tagging' },
-            categoryId: { type: 'int', example: 2 },
-            sellerId: { type: 'int', example: 8 }
+            categoryId: { type: 'int', example: 2 }
           }
         },
         User: {

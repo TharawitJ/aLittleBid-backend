@@ -1,3 +1,5 @@
+import { getUserById } from "../services/user.service.js";
+
 export function randBetween(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
@@ -9,3 +11,9 @@ export const sanitizeData = (data, allowedFields) => {
     )
   );
 };
+
+export async function validateAndFetchUser(userId) {
+    const user = await getUserById(userId);
+    if (!user) throw createError(404, "Invalid user");
+    return user;
+}
