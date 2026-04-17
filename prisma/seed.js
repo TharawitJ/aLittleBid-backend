@@ -56,7 +56,6 @@ async function main() {
       description: faker.commerce.productDescription(),
       categoryId: randBetween(1, 10),
       sellerId: randBetween(1, 30),
-
     })),
     skipDuplicates: true,
   });
