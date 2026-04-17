@@ -25,8 +25,10 @@ app.get('/api-docs.json', (req, res) => {
   res.send(swaggerSpec);
 });
 
+app.use("/api/auth", authRoute);
 app.use('/api/users', userRoutes);
 app.use('/api/products', productRoutes);
+
 
 app.use(notFound);
 

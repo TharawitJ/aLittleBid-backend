@@ -1,4 +1,4 @@
-import { createAddress, deleteUserById, getAllUsers, getUserById, updateUserAddress } from "../services/user.service.js";
+import { createAddress, deleteUserById, getAllUsers, getUserById, updateUserAddress, updateUserById } from "../services/user.service.js";
 
 export async function getUserController(req, res, next) {
     const id = Number(req.params.id);
@@ -26,13 +26,27 @@ export async function deleteUserController(req, res, next) {
   }
 }
 
-
 export async function getAllUsersController(req, res, next) {
 
   try {
     const responses = await getAllUsers();
     res.status(201).json({
       message: "All users retrieved successfully",
+      responses,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function updateUserController(req, res, next) {
+    const id = Number(req.params.id);
+    // const authenticatedId = req.user.id;
+    
+  try {
+    const responses = await updateUserById(id, 81, req.body);
+    res.status(201).json({
+      message: "User data updated successfully",
       responses,
     });
   } catch (error) {
