@@ -18,6 +18,15 @@ const AUCTION_FIELDS = [
   "status",
 ];
 
+const UPDATE_AUCTION_FIELDS = [
+  "startTime",
+  "endTime",
+  "startingPrice",
+  "reservePrice",
+  "minIncrement",
+  "status",
+];
+
 export async function createAuction(data) {
   const result = await prisma.auction.create({
     data: data,
@@ -34,12 +43,12 @@ export async function getAuctionById(id) {
   const result = await prisma.auction.findUnique({
     where: { id },
   });
-
+  if (!result) throw createError(404, "Invalid auction");
   return result;
 }
 
 export async function updateAuctionById(id, data) {
-  const result = await prisma.auction.delete({
+  const result = await prisma.auction.update({
     where: { id },
     data: data,
   });
@@ -54,7 +63,7 @@ export async function deleteAuctionById(id) {
 }
 
 /// SPECIFIC SERVICE
-export async function createUserAction(userId, productId, data) {
+export async function createUserAuction(userId, productId, data) {
   const user = await validateAndFetchUser(userId);
   validateSellerRole(user);
   await validateProductOwnerAndFetch(productId, userId);
@@ -63,4 +72,21 @@ export async function createUserAction(userId, productId, data) {
   const result = await createAuction(auctionData);
 
   return result;
+}
+
+export async function updateUserAuction(auctionId, userId, data) {
+  const user = await validateAndFetchUser(userId);
+  validateSellerRole(user);
+
+  const auction = await getAuctionById(auctionId);
+  await validateProductOwnerAndFetch(auction.productId, userId);
+  if (auction.status !== "WAITING") throw createError(403, "Cannot edit when auction status is pass waiting."); 
+
+  const auctionData = sanitizeData(data, UPDATE_AUCTION_FIELDS);
+  const result = await updateAuctionById(auctionId, auctionData);
+
+  return result;
+}
+
+export async function updateAuctionStatus(auctionId, data) {
 }

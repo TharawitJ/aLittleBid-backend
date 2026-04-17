@@ -46,6 +46,18 @@ const options = {
             phone:  { type: 'string', example: '0947392909' }
           }
         },  
+        Auction: {
+          type: 'object',
+          properties: {
+            productId: { type: 'int', example: 10 },
+            startTime: { type: 'datetime', example: "2026-06-06T06:13:00.000Z" },
+            endTime: { type: 'datetime', example: "2026-06-09T06:13:00.000Z" },
+            startingPrice: { type: 'decimal', example: 10 },
+            reservePrice:  { type: 'decimal', example: 5500 },
+            minIncrement:  { type: 'decimal', example: 100 },
+            status:  { type: 'string', example: 'WAITING' }
+          }
+        },  
       }
     },
   },

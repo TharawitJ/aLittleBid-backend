@@ -120,7 +120,7 @@ model Auction {
   startingPrice     Decimal       @db.Decimal(10, 2)
   reservePrice      Decimal?      @db.Decimal(10, 2)
   minIncrement      Decimal       @db.Decimal(10, 2)
-  status            AuctionStatus @default(ACTIVE)
+  status            AuctionStatus @default(WAITING)
   type              AuctionType   @default(ENGLISH)
   shippingAddress   Address?      @relation(fields: [shippingAddressId], references: [id], onDelete: Cascade)
   shippingAddressId Int?

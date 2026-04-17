@@ -32,7 +32,7 @@ Authorization: Bearer
 }
 
 ###  Get product by id
-GET  {{BASE_URL}}/products/77
+GET  {{BASE_URL}}/products/55
 content-type: application/json
 Authorization: Bearer 
 
