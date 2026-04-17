@@ -27,11 +27,31 @@ export async function deleteProductById(id) {
   const result = await prisma.product.delete({
     where: { id }
   });
-
   return result;
 }
 
-export async function createProduct(userId, data) {
+export async function createProduct(data) {
+    const result = prisma.product.create({
+    data: data,
+  });
+  return result;
+}
+
+export async function updateProduct(id, data) {
+   const result = prisma.product.update({
+    where: {id: id},
+    data: data,
+  });
+  return result;
+}
+
+export async function deleteUserProduct(id, userId) {
+    await validateProductOwnerAndFetch(id, userId);
+    const result = await deleteProductById(id);
+  return result;
+}
+
+export async function createSellerProduct(userId, data) {
   const user = await validateAndFetchUser(userId);
 
   validateSellerRole(user);
@@ -41,27 +61,23 @@ export async function createProduct(userId, data) {
   const productData = sanitizeData(data, PRODUCT_FIELDS);
   productData.sellerId = user.id;
 
-  const result = prisma.product.create({
-    data: productData,
-  });
-
+  const result = await createProduct(productData);
+  
   return result;
 }
 
-export async function updateProduct(id, userId, data) {
+export async function updateUserProduct(id, userId, data) {
   const user = await validateAndFetchUser(userId);
+
   validateSellerRole(user);
 
-  // check if the user owns the product
-  const product = await getProductById(id)
-  if (product.sellerId !== userId) throw createError(403, "Access denied: Product owner permissions required.");
+  await validateProductOwnerAndFetch(id, userId);
   
   const updateProductData = sanitizeData(data, PRODUCT_FIELDS);
+  
+  if (updateProductData.categoryId) await getValidCategory(updateProductData.categoryId);
 
-  const result = prisma.product.update({
-    where: {id},
-    data: updateProductData,
-  });
+  const result = await updateProduct(id, updateProductData)
 
   return result;
 }
@@ -70,6 +86,13 @@ export function validateSellerRole(user) {
     if (user.role !== "SELLER") {
         throw createError(403, "Access denied: Seller permissions required.");
     }
+}
+
+export async function validateProductOwnerAndFetch(productId, userId) {
+  const product = await getProductById(productId);
+  if (!product) throw createError(404, "Product not found.");
+  if (product.sellerId !== userId) throw createError(403, "Access denied: Product owner permissions required.");
+  return product;
 }
 
 ////////////////////////////////////////////////////////
