@@ -71,9 +71,9 @@ productRoutes.delete('/:id', deleteProductController);
 
 /**
  * @openapi
- * /products/{id}:
+ * /products:
  *   post:
- *     summary: Create product by ID
+ *     summary: Create new product
  *     tags: [Products]
  *     requestBody:
  *       required: true

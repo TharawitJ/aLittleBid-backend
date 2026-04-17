@@ -1,0 +1,24 @@
+@BASE_URL = http://localhost:3000/api
+### Login
+POST {{BASE_URL}}/auth/login 
+content-type: application/json
+
+{
+ "identity" : "tanacom0249@hotmail.com",
+ "password" : "Jammy@1223_3432"
+}
+
+###  Create auction
+POST  {{BASE_URL}}/auctions
+content-type: application/json
+Authorization: Bearer 
+
+{
+ "productId": 66,
+  "startTime": "2026-06-06T06:13:00.000Z",
+  "endTime": "2026-06-09T06:13:00.000Z",
+  "startingPrice": 1,
+  "reservePrice": 1000,
+  "minIncrement": 100,
+  "status": "ACTIVE"
+} 

@@ -13,12 +13,11 @@ datasource db {
 }
 
 enum AuctionStatus {
-  DRAFT
+  WAITING
   ACTIVE
-  ENDED
   CANCELLED
   CLOSED_UNSOLD
-  COMPLETED
+  SOLD
 }
 
 enum UserRole {
@@ -121,7 +120,7 @@ model Auction {
   startingPrice     Decimal       @db.Decimal(10, 2)
   reservePrice      Decimal?      @db.Decimal(10, 2)
   minIncrement      Decimal       @db.Decimal(10, 2)
-  status            AuctionStatus @default(DRAFT)
+  status            AuctionStatus @default(ACTIVE)
   type              AuctionType   @default(ENGLISH)
   shippingAddress   Address?      @relation(fields: [shippingAddressId], references: [id], onDelete: Cascade)
   shippingAddressId Int?

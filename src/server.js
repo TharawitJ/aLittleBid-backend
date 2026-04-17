@@ -7,6 +7,7 @@ import productRoutes from "./routes/product.route.js";
 import swaggerUi from 'swagger-ui-express';
 import { swaggerSpec } from './swagger.js';
 import authRoute from "./routes/auth.route.js";
+import auctionRoutes from "./routes/auction.route.js";
 
 const app = express(); 
 const PORT = 3000;
@@ -30,6 +31,8 @@ app.use("/api/auth", authRoute);
 app.use('/api/users', userRoutes);
 app.use('/api/products', productRoutes);
 
+app.use('/api/auctions', auctionRoutes);
+// app.use('/api/bids', productRoutes);
 
 app.use(notFound);
 

@@ -1,6 +1,6 @@
 import prisma from "../lib/prismaClient.js";
 import createError from "http-errors";
-import { sanitizeData, validateAndFetchUser } from "../utils/helpers.js";
+import { sanitizeData, validateAndFetchUser, validateSellerRole } from "../utils/helpers.js";
 
 const PRODUCT_FIELDS = [
   "name", "description", "categoryId"
@@ -64,12 +64,6 @@ export async function updateProduct(id, userId, data) {
   });
 
   return result;
-}
-
-export function validateSellerRole(user) {
-    if (user.role !== "SELLER") {
-        throw createError(403, "Access denied: Seller permissions required.");
-    }
 }
 
 ////////////////////////////////////////////////////////
