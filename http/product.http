@@ -14,25 +14,25 @@ content-type: application/json
 Authorization: Bearer 
 
 {
-   "name": "Spacemax", 
-   "description": "original debris from space", 
-   "categoryId": 16
+   "name": "Hollerix", 
+   "description": "best designer watch", 
+   "categoryId": 1
 }
 
 
 ###  Update product data
-PATCH  {{BASE_URL}}/products/77
+PATCH  {{BASE_URL}}/products/103
 content-type: application/json
 Authorization: Bearer 
 
 {
-   "name": "Sleek Steel Shirt", 
-   "description": "shirt made from steel only foundable here", 
-   "categoryId": 9
+   "name": "Hollerix 2", 
+   "description": "the best designer watch", 
+   "categoryId": 2
 }
 
 ###  Get product by id
-GET  {{BASE_URL}}/products/77
+GET  {{BASE_URL}}/products/103
 content-type: application/json
 Authorization: Bearer 
 
@@ -43,10 +43,9 @@ Authorization: Bearer
 
 
 ###  Delete product by Id
-DELETE  {{BASE_URL}}/products/101
+DELETE  {{BASE_URL}}/products/77
 content-type: application/json
 Authorization: Bearer 
-
 
 ###  Get all categories
 GET  {{BASE_URL}}/products/categories
