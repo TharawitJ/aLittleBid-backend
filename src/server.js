@@ -8,7 +8,7 @@ import swaggerUi from 'swagger-ui-express';
 import { swaggerSpec } from './swagger.js';
 
 const app = express(); 
-const PORT = 3500;
+const PORT = 3000;
 
 console.log("Hit the route!");
 
