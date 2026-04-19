@@ -41,10 +41,9 @@ export async function getAllUsersController(req, res, next) {
 
 export async function updateUserController(req, res, next) {
     const id = Number(req.params.id);
-    // const authenticatedId = req.user.id;
-    
+    const authenticatedId = req.user.id;
   try {
-    const responses = await updateUserById(id, 81, req.body);
+    const responses = await updateUserById(id, authenticatedId, req.body);
     res.status(201).json({
       message: "User data updated successfully",
       responses,
