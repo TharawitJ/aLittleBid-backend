@@ -1,0 +1,14 @@
+@BASE_URL = http://localhost:3000/api
+### Login
+POST {{BASE_URL}}/auth/login 
+content-type: application/json
+
+{
+ "identity" : "tanacom0249@hotmail.com",
+ "password" : "Jammy@1223_3432"
+}
+
+###  Get all users
+GET  {{BASE_URL}}/users
+content-type: application/json
+Authorization: Bearer 

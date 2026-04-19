@@ -1,5 +1,5 @@
 import express from "express";
-import { createAddressController, deleteUserController, getAllUsersController, getUserController, updateAddressController } from "../controllers/user.controller.js";
+import { createAddressController, deleteUserController, getAllUsersController, getUserController, updateAddressController, updateUserController } from "../controllers/user.controller.js";
 
 const userRoutes = express.Router();
 
@@ -36,6 +36,30 @@ userRoutes.get('', getAllUsersController);
  *         description: User not found
  */
 userRoutes.get('/:id', getUserController);
+
+/**
+ * @openapi
+ * /users/{id}:
+ *   patch:
+ *     summary: Update a user data
+ *     tags: [Users]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *              $ref: '#/components/schemas/User'
+ *     responses:
+ *       200:
+ *         description: User updated successfully
+ */
+userRoutes.patch('/:id', updateUserController)
 
 /**
  * @openapi
