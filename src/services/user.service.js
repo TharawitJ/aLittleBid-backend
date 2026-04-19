@@ -21,7 +21,7 @@ export async function getUserById(id) {
     where: { id },
     include: { addresses: true },
   });
-
+  if (!result) throw createError(404, "Invalid user");
   return result;
 }
 

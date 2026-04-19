@@ -1,6 +1,7 @@
 import prisma from "../lib/prismaClient.js";
 import createError from "http-errors";
-import { sanitizeData, validateAndFetchUser } from "../utils/helpers.js";
+import { sanitizeData, validateSellerRole } from "../utils/helpers.js";
+import { getUserById } from "./user.service.js";
 
 const PRODUCT_FIELDS = [
   "name", "description", "categoryId"
