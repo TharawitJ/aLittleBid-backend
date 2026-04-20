@@ -1,6 +1,5 @@
 import createError from "http-errors";
-import jwt from "jsonwebtoken";
-import { findUserById } from "../services/auth.service.js";
+import { verifyToken } from "../utils/jwt.js";
 
 export async function authCheck(req, res, next) {
   try {
@@ -10,9 +9,7 @@ export async function authCheck(req, res, next) {
     }
 
     const token = authorization.split(" ")[1];
-    const payload = jwt.verify(token, process.env.JWT_SECRET, {
-      algorithms: ["HS256"],
-    });
+    const payload = verifyToken(token);
 
     req.user = payload;
     next();
@@ -20,4 +17,5 @@ export async function authCheck(req, res, next) {
     next(error);
   }
 }
+
 export default authCheck;

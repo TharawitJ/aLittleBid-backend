@@ -5,7 +5,6 @@ import { login, register } from "../controllers/auth.controllers.js";
 
 const authRoute = express.Router();
 
-
 /**
  * @openapi
  * /auth/login:

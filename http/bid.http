@@ -11,7 +11,6 @@ content-type: application/json
  "password" : "99999"
 }
 
-
 ###  Create bid
 POST  {{BASE_URL}}/bids
 content-type: application/json
@@ -20,7 +19,7 @@ Authorization: Bearer {{ACCESS_TOKEN}}
 {
   "bidderId": 1000,
   "auctionId": 5, 
-  "amount": 2500
+  "amount": 3000
 }
 
 ###  get all bids

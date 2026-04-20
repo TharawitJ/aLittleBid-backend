@@ -4,13 +4,13 @@ import { getUserById } from "./user.service.js";
 import { getAuctionById } from "./auction.service.js";
 import { isBiddableDuration, sanitizeData, validateBidOwnerAndFetch } from "../utils/helpers.js";
 
-const BID_FIELDS = [
+export const BID_FIELDS = [
   "bidderId",
   "auctionId", 
   "amount"
 ];
 
-const UPDATE_BID_FIELDS = [
+export const UPDATE_BID_FIELDS = [
   "isWinning"
 ];
 
