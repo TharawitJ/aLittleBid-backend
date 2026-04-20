@@ -1,0 +1,59 @@
+@BASE_URL = http://localhost:3000/api
+@ACCESS_TOKEN = {{login.response.body.token}}
+
+### Login
+# @name login
+POST {{BASE_URL}}/auth/login HTTP/1.1
+content-type: application/json
+
+{
+ "email" : "tester22@gmail.com",
+ "password" : "88889999"
+}
+
+###  Register
+POST {{BASE_URL}}/auth/register HTTP/1.1
+content-type: application/json
+
+{
+ "firstname"  : "Brody",
+ "lastname"   : "Bannerman",
+ "email"      : "hellokitty@gmail.com",
+ "username"   : "anddy333",
+ "password"   : "99999",
+ "phone"      : "123433330",
+ "role"       : "BUYER",
+ "street"     : "333 Main St",
+ "city"       : "town",
+ "postalCode" : "33312",
+ "label"      : "Home",
+ "state"      : "town",
+ "country"    : "USA"
+}
+
+
+
+### Send OTP for Forgot Password
+POST {{BASE_URL}}/auth/request-otp HTTP/1.1
+{
+    "email" : "thanacom0249@gmail.com"
+}
+
+### Get OTP after requesting 
+POST {{BASE_URL}}/auth/verify-otp HTTP/1.1
+content-type: application/json
+
+{
+  "email": "thanacom0249@gmail.com",
+  "otp": "378156"
+}
+
+### Reset Password 
+POST {{BASE_URL}}/auth/reset-password HTTP/1.1
+content-type: application/json
+
+{
+ "email": "thanacom0249@gmail.com",
+  "otp": "378156",
+  "newPassword": "thanacom@22333"
+}

@@ -42,6 +42,7 @@ export async function getAllAuctions() {
 export async function getAuctionById(id) {
   const result = await prisma.auction.findUnique({
     where: { id },
+    include: { bids: true }
   });
   if (!result) throw createError(404, "Invalid auction");
   return result;
@@ -98,5 +99,17 @@ export async function updateUserAuction(auctionId, userId, data) {
   return result;
 }
 
+export async function deleteUserAuction(auctionId, userId) {
+  const user = await getUserById(userId);
+  validateSellerRole(user);
+
+  const auction = await getAuctionById(auctionId);
+  await validateProductOwnerAndFetch(auction.productId, userId);
+
+  const result = await deleteAuctionById(auctionId);
+  return result;
+}
+
 export async function updateAuctionStatus(auctionId, data) {
+  // TO DO
 }
