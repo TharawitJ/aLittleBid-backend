@@ -6,6 +6,7 @@ import {
   getBidController,
   updateBidController,
 } from "../controllers/bid.controller.js";
+import authCheck from "../middlewares/auth.middleware.js";
 
 const bidRoutes = express.Router();
 
@@ -27,7 +28,41 @@ const bidRoutes = express.Router();
  *       404:
  *         description: Fail to add Bid
  */
-bidRoutes.post("", createBidController);
+bidRoutes.post("", authCheck, createBidController);
+
+/**
+ * @openapi
+ * /bids:
+ *   get:
+ *     summary: Get all bids
+ *     tags: [Bids]
+ *     responses:
+ *       200:
+ *         description: Bids retrieved successfully
+ *       404:
+ *         description: Fail to retrieve Bids
+ */
+bidRoutes.get("", authCheck, getAllBidsController);
+
+/**
+ * @openapi
+ * /bids/{id}:
+ *   get:
+ *     summary: Get bid by id
+ *     tags: [Bids]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Bid retrieved successfully
+ *       404:
+ *         description: Fail to retrieve Bid
+ */
+bidRoutes.get("/:id", authCheck, getBidController);
 
 /**
  * @openapi
@@ -58,41 +93,7 @@ bidRoutes.post("", createBidController);
  *       400:
  *         description: Fail to update Bid
  */
-bidRoutes.patch("/:id", updateBidController);
-
-/**
- * @openapi
- * /bids:
- *   get:
- *     summary: Get all bids
- *     tags: [Bids]
- *     responses:
- *       200:
- *         description: Bids retrieved successfully
- *       404:
- *         description: Fail to retrieve Bids
- */
-bidRoutes.get("", getAllBidsController);
-
-/**
- * @openapi
- * /bids/{id}:
- *   get:
- *     summary: Get bid by id
- *     tags: [Bids]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Bid retrieved successfully
- *       404:
- *         description: Fail to retrieve Bid
- */
-bidRoutes.get("/:id", getBidController);
+bidRoutes.patch("/:id", authCheck, updateBidController);
 
 /**
  * @openapi
@@ -112,6 +113,6 @@ bidRoutes.get("/:id", getBidController);
  *       404:
  *         description: Fail to delete Bid
  */
-bidRoutes.delete("/:id", deleteBidController);
+bidRoutes.delete("/:id", authCheck, deleteBidController);
 
 export default bidRoutes;

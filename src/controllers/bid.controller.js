@@ -1,4 +1,4 @@
-import { deleteBidById, getAllBids, getBidById, placeBid, updateBidStatus } from "../services/bid.service.js";
+import { deleteUserBid, getAllBids, getBidById, placeBid, updateBidStatus } from "../services/bid.service.js";
 
 export async function getAllBidsController(req, res, next) {
 
@@ -15,6 +15,7 @@ export async function getAllBidsController(req, res, next) {
 
 export async function getBidController(req, res, next) {
     const id = req.params.id;
+
   try {
     const responses = await getBidById(id);
     res.status(201).json({
@@ -28,8 +29,10 @@ export async function getBidController(req, res, next) {
 
 export async function deleteBidController(req, res, next) {
     const id = req.params.id;
+    const userId = req.user.id;
+
   try {
-    const responses = await deleteBidById(id);
+    const responses = await deleteUserBid(id, userId);
     res.status(201).json({
       message: "Deleted bid successfully",
       responses,
@@ -41,9 +44,7 @@ export async function deleteBidController(req, res, next) {
 
 export async function createBidController(req, res, next) {
   const auctionId = req.body.auctionId;
-    // const { id } = req.user;
-    // CHANGE HERE AFTER AUTH
-  const userId = 81;
+  const userId = req.user.id;
 
   try {
     const responses = await placeBid(userId, auctionId, req.body);
@@ -57,10 +58,7 @@ export async function createBidController(req, res, next) {
 }
 
 export async function updateBidController(req, res, next) {
-   const id = Number(req.params.id);
-    // const { id } = req.user;
-    // CHANGE HERE AFTER AUTH
-  const userId = 21;
+   const id = req.params.id;
 
   try {
     const responses = await updateBidStatus(id, req.body);

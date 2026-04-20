@@ -1,5 +1,6 @@
 import express from "express";
 import { createAuctionController, deleteAuctionController, getAllAuctionsController, getAuctionController, updateAuctionController } from "../controllers/auction.controller.js";
+import authCheck from "../middlewares/auth.middleware.js";
 
 const auctionRoutes = express.Router();
 
@@ -21,7 +22,7 @@ const auctionRoutes = express.Router();
  *       404:
  *         description: Fail to add auction
  */
-auctionRoutes.post('', createAuctionController);
+auctionRoutes.post('', authCheck, createAuctionController);
 
 /**
  * @openapi
@@ -47,7 +48,7 @@ auctionRoutes.post('', createAuctionController);
  *       404:
  *         description: Fail to update auction
  */
-auctionRoutes.patch('/:id', updateAuctionController);
+auctionRoutes.patch('/:id', authCheck, updateAuctionController);
 
 /**
  * @openapi
@@ -61,7 +62,7 @@ auctionRoutes.patch('/:id', updateAuctionController);
  *       404:
  *         description: Fail to fetch auctions
  */
-auctionRoutes.get('', getAllAuctionsController);
+auctionRoutes.get('', authCheck, getAllAuctionsController);
 
 /**
  * @openapi
@@ -81,7 +82,7 @@ auctionRoutes.get('', getAllAuctionsController);
  *       404:
  *         description: Fail to fetch auction
  */
-auctionRoutes.get('/:id', getAuctionController);
+auctionRoutes.get('/:id', authCheck, getAuctionController);
 
 /**
  * @openapi
@@ -101,6 +102,6 @@ auctionRoutes.get('/:id', getAuctionController);
  *       404:
  *         description: Fail to delete auction
  */
-auctionRoutes.delete('/:id', deleteAuctionController);
+auctionRoutes.delete('/:id', authCheck, deleteAuctionController);
 
 export default auctionRoutes;

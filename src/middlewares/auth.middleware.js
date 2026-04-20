@@ -6,19 +6,15 @@ export async function authCheck(req, res, next) {
   try {
     const authorization = req.headers.authorization;
     if (!authorization) {
-      throw createError(401, "Unauthorization");
+      throw createError(401, "Unauthorized");
     }
 
-    console.log(authorization);
     const token = authorization.split(" ")[1];
     const payload = jwt.verify(token, process.env.JWT_SECRET, {
       algorithms: ["HS256"],
     });
-    const user = await findUserById(payload.id);
-    if (!user) {
-      throw createError(401, "Unauthorized");
-    }
-    req.user = user;
+
+    req.user = payload;
     next();
   } catch (error) {
     next(error);

@@ -53,7 +53,7 @@ export async function deleteUserProduct(id, userId) {
 }
 
 export async function createSellerProduct(userId, data) {
-  const user = await validateAndFetchUser(userId);
+  const user = await getUserById(userId);
 
   validateSellerRole(user);
 
@@ -68,7 +68,7 @@ export async function createSellerProduct(userId, data) {
 }
 
 export async function updateUserProduct(id, userId, data) {
-  const user = await validateAndFetchUser(userId);
+  const user = await getUserById(userId);
 
   validateSellerRole(user);
 
