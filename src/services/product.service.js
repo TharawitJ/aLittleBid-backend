@@ -83,11 +83,11 @@ export async function updateUserProduct(id, userId, data) {
   return result;
 }
 
-export function validateSellerRole(user) {
-    if (user.role !== "SELLER") {
-        throw createError(403, "Access denied: Seller permissions required.");
-    }
-}
+// export function validateSellerRole(user) {
+//     if (user.role !== "SELLER") {
+//         throw createError(403, "Access denied: Seller permissions required.");
+//     }
+// }
 
 export async function validateProductOwnerAndFetch(productId, userId) {
   const product = await getProductById(productId);

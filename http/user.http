@@ -1,14 +1,55 @@
 @BASE_URL = http://localhost:3000/api
+@ACCESS_TOKEN = {{login.response.body.token}}
+
 ### Login
-POST {{BASE_URL}}/auth/login 
+# @name login
+POST {{BASE_URL}}/auth/login HTTP/1.1
 content-type: application/json
 
 {
- "identity" : "tanacom0249@hotmail.com",
- "password" : "Jammy@1223_3432"
+ "email" : "anddy333@gmail.com",
+ "password" : "88889999"
 }
 
 ###  Get all users
 GET  {{BASE_URL}}/users
 content-type: application/json
-Authorization: Bearer 
+Authorization: Bearer {{ACCESS_TOKEN}}
+
+###  Get user by id
+GET  {{BASE_URL}}/users/199
+content-type: application/json
+Authorization: Bearer {{ACCESS_TOKEN}}
+
+###  Update user by id
+PATCH  {{BASE_URL}}/users/201
+content-type: application/json
+Authorization: Bearer {{ACCESS_TOKEN}}
+
+{ 
+   "username": "provocation",
+  "email": "tester22@gmail.com",  
+  "firstname": "pan", 
+  "lastname": "fifth", 
+  "phone": "93838383838"  
+}
+
+###  DELETE user by id
+DELETE   {{BASE_URL}}/users/199
+content-type: application/json
+Authorization: Bearer {{ACCESS_TOKEN}}
+
+###  Update user by id
+PATCH  {{BASE_URL}}/users/201/addresses/23
+content-type: application/json
+Authorization: Bearer {{ACCESS_TOKEN}}
+
+{ 
+  "label": "SCHOOL",   
+  "street": "Wannasorn building",    
+  "city":    "Bangkok",   
+  "state": "BKK city",     
+  "postalCode": "01400",
+  "country": "Bangkok",    
+  "isDefault": false
+}
