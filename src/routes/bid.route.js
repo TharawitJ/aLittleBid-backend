@@ -31,37 +31,6 @@ bidRoutes.post("", createBidController);
 
 /**
  * @openapi
- * /bids/{id}:
- *   patch:
- *     summary: Update bid by id
- *     tags: [Bids]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *          schema:
- *             type: object
- *             required:
- *                 - isWinning
- *             properties:
- *                isWinning:
- *                  type: boolean
- *     responses:
- *       200:
- *         description: Bid updated successfully
- *       400:
- *         description: Fail to update Bid
- */
-bidRoutes.patch("/:id", updateBidController);
-
-/**
- * @openapi
  * /bids:
  *   get:
  *     summary: Get all bids
@@ -93,6 +62,37 @@ bidRoutes.get("", getAllBidsController);
  *         description: Fail to retrieve Bid
  */
 bidRoutes.get("/:id", getBidController);
+
+/**
+ * @openapi
+ * /bids/{id}:
+ *   patch:
+ *     summary: Update bid by id
+ *     tags: [Bids]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *          schema:
+ *             type: object
+ *             required:
+ *                 - isWinning
+ *             properties:
+ *                isWinning:
+ *                  type: boolean
+ *     responses:
+ *       200:
+ *         description: Bid updated successfully
+ *       400:
+ *         description: Fail to update Bid
+ */
+bidRoutes.patch("/:id", updateBidController);
 
 /**
  * @openapi

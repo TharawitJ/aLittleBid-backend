@@ -11,7 +11,8 @@ import auctionRoutes from "./routes/auction.route.js";
 import bidRoutes from "./routes/bid.route.js";
 
 const app = express(); 
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
+const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:5173";
 
 console.log("Hit the route!");
 
