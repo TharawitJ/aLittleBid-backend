@@ -1,4 +1,4 @@
-import { createProduct, deleteProductById, getAllCategories, getAllProducts, getProductById, updateProduct } from "../services/product.service.js";
+import { createSellerProduct, deleteUserProduct, getAllCategories, getAllProducts, getProductById, updateProduct, updateUserProduct } from "../services/product.service.js";
 
 
 export async function getAllProductsController(req, res, next) {
@@ -29,8 +29,10 @@ export async function getProductController(req, res, next) {
 
 export async function deleteProductController(req, res, next) {
     const id = Number(req.params.id);
+     // CHANGE HERE AFTER AUTH
+  const userId = 25;
   try {
-    const responses = await deleteProductById(id);
+    const responses = await deleteUserProduct(id, userId);
     res.status(201).json({
       message: "Deleted product successfully",
       responses,
@@ -43,9 +45,9 @@ export async function deleteProductController(req, res, next) {
 export async function createProductController(req, res, next) {
   // const { id } = req.user;
   // CHANGE HERE AFTER AUTH
-  const id = 12;
+  const id = 3;
   try {
-    const responses = await createProduct(id, req.body);
+    const responses = await createSellerProduct(id, req.body);
     res.status(201).json({
       message: "Product created successfully",
       responses,
@@ -60,10 +62,10 @@ export async function updateProductController(req, res, next) {
   const id = Number(req.params.id);
     // const { id } = req.user;
     // CHANGE HERE AFTER AUTH
-  const userId = 25;
+  const userId = 12;
 
   try {
-    const responses = await updateProduct(id, userId, req.body);
+    const responses = await updateUserProduct(id, userId, req.body);
     res.status(201).json({
       message: "Product updated successfully",
       responses,
