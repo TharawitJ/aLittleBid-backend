@@ -33,7 +33,7 @@ content-type: application/json
 Authorization: Bearer {{ACCESS_TOKEN}}  
 
 ###  get auction by id
-GET  {{BASE_URL}}/auctions/6
+GET  {{BASE_URL}}/auctions/5
 content-type: application/json
 Authorization: Bearer {{ACCESS_TOKEN}}  
 

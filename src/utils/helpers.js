@@ -49,10 +49,14 @@ export function isBiddableDuration(auction) {
   const now = new Date();
 
   if (auction.status !== "ACTIVE") {
+<<<<<<< HEAD
     throw createError(
       400,
       `This auction is currently ${auction.status.toLowerCase()}.`,
     );
+=======
+    throw createError(400, `Cannot bid now. This auction is currently ${auction.status.toLowerCase()}.`);
+>>>>>>> dev
   }
 
   if (now < auction.startTime) {
