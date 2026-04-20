@@ -1,5 +1,6 @@
 import express from "express";
 import { createAddressController, deleteUserController, getAllUsersController, getUserController, updateAddressController, updateUserController } from "../controllers/user.controller.js";
+import authCheck from "../middlewares/auth.middleware.js";
 
 const userRoutes = express.Router();
 
@@ -15,7 +16,7 @@ const userRoutes = express.Router();
  *       200:
  *         description: List of all users
  */
-userRoutes.get('', getAllUsersController);
+userRoutes.get('', authCheck, getAllUsersController);
 
 /**
  * @openapi
@@ -35,7 +36,7 @@ userRoutes.get('', getAllUsersController);
  *       404:
  *         description: User not found
  */
-userRoutes.get('/:id', getUserController);
+userRoutes.get('/:id', authCheck, getUserController);
 
 /**
  * @openapi
@@ -59,7 +60,7 @@ userRoutes.get('/:id', getUserController);
  *       200:
  *         description: User updated successfully
  */
-userRoutes.patch('/:id', updateUserController)
+userRoutes.patch('/:id', authCheck, updateUserController)
 
 /**
  * @openapi
@@ -77,7 +78,32 @@ userRoutes.patch('/:id', updateUserController)
  *       200:
  *         description: User deleted successfully
  */
-userRoutes.delete('/:id', deleteUserController);
+userRoutes.delete('/:id', authCheck, deleteUserController);
+
+
+/**
+ * @openapi
+ * /users/{id}/addresses:
+ *   post:
+ *     summary: Create an address for specific user Id
+ *     tags: [Addresses]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *              $ref: '#/components/schemas/Address'
+ *     responses:
+ *       200:
+ *         description: Address added successfully
+ */
+userRoutes.post('/:id/addresses/', authCheck, createAddressController);
 
 /**
  * @openapi
@@ -106,30 +132,6 @@ userRoutes.delete('/:id', deleteUserController);
  *       200:
  *         description: Address updated successfully
  */
-userRoutes.patch('/:id/addresses/:addressId', updateAddressController)
-
-/**
- * @openapi
- * /users/{id}/addresses:
- *   post:
- *     summary: Create an address for specific user Id
- *     tags: [Addresses]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *              $ref: '#/components/schemas/Address'
- *     responses:
- *       200:
- *         description: Address added successfully
- */
-userRoutes.post('/:id/addresses/', createAddressController)
+userRoutes.patch('/:id/addresses/:addressId', authCheck, updateAddressController);
 
 export default userRoutes;

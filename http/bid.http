@@ -1,43 +1,47 @@
 @BASE_URL = http://localhost:3000/api
+@ACCESS_TOKEN = {{login.response.body.token}}
+
 ### Login
-POST {{BASE_URL}}/auth/login 
+# @name login
+POST {{BASE_URL}}/auth/login HTTP/1.1
 content-type: application/json
 
 {
- "identity" : "tanacom0249@hotmail.com",
- "password" : "Jammy@1223_3432"
+ "email" : "hellokitty@gmail.com",
+ "password" : "99999"
 }
+
 
 ###  Create bid
 POST  {{BASE_URL}}/bids
 content-type: application/json
-Authorization: Bearer 
+Authorization: Bearer {{ACCESS_TOKEN}} 
 
 {
   "bidderId": 1000,
   "auctionId": 5, 
-  "amount": 2000
+  "amount": 2500
 }
 
 ###  get all bids
 GET  {{BASE_URL}}/bids
 content-type: application/json
-Authorization: Bearer 
+Authorization: Bearer {{ACCESS_TOKEN}} 
 
 ###  get bid by id
 GET  {{BASE_URL}}/bids/cmo2quvvz0000muyzswdp4eh3
 content-type: application/json
-Authorization: Bearer 
+Authorization: Bearer {{ACCESS_TOKEN}} 
 
 ###  DELETE bid by id
-DELETE  {{BASE_URL}}/bids/cmo2r3yls0001muyzlgxs5mke
+DELETE  {{BASE_URL}}/bids/cmo2rh5x80002z8yz6i9zo4u2
 content-type: application/json
-Authorization: Bearer 
+Authorization: Bearer {{ACCESS_TOKEN}} 
 
 ###  Update bid status
-POST  {{BASE_URL}}/bids
+PATCH  {{BASE_URL}}/bids/cmo6t436j0000enyzn106ulhi
 content-type: application/json
-Authorization: Bearer 
+Authorization: Bearer {{ACCESS_TOKEN}} 
 
 {
     "isWinning": true

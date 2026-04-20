@@ -6,6 +6,7 @@ import {
   getBidController,
   updateBidController,
 } from "../controllers/bid.controller.js";
+import authCheck from "../middlewares/auth.middleware.js";
 
 const bidRoutes = express.Router();
 
@@ -27,7 +28,7 @@ const bidRoutes = express.Router();
  *       404:
  *         description: Fail to add Bid
  */
-bidRoutes.post("", createBidController);
+bidRoutes.post("", authCheck, createBidController);
 
 /**
  * @openapi
@@ -41,7 +42,7 @@ bidRoutes.post("", createBidController);
  *       404:
  *         description: Fail to retrieve Bids
  */
-bidRoutes.get("", getAllBidsController);
+bidRoutes.get("", authCheck, getAllBidsController);
 
 /**
  * @openapi
@@ -61,7 +62,7 @@ bidRoutes.get("", getAllBidsController);
  *       404:
  *         description: Fail to retrieve Bid
  */
-bidRoutes.get("/:id", getBidController);
+bidRoutes.get("/:id", authCheck, getBidController);
 
 /**
  * @openapi
@@ -92,7 +93,7 @@ bidRoutes.get("/:id", getBidController);
  *       400:
  *         description: Fail to update Bid
  */
-bidRoutes.patch("/:id", updateBidController);
+bidRoutes.patch("/:id", authCheck, updateBidController);
 
 /**
  * @openapi
@@ -112,6 +113,6 @@ bidRoutes.patch("/:id", updateBidController);
  *       404:
  *         description: Fail to delete Bid
  */
-bidRoutes.delete("/:id", deleteBidController);
+bidRoutes.delete("/:id", authCheck, deleteBidController);
 
 export default bidRoutes;

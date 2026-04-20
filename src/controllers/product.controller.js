@@ -29,8 +29,8 @@ export async function getProductController(req, res, next) {
 
 export async function deleteProductController(req, res, next) {
     const id = Number(req.params.id);
-     // CHANGE HERE AFTER AUTH
-  const userId = 25;
+    const userId = req.user.id;
+
   try {
     const responses = await deleteUserProduct(id, userId);
     res.status(201).json({
@@ -43,9 +43,8 @@ export async function deleteProductController(req, res, next) {
 }
 
 export async function createProductController(req, res, next) {
-  // const { id } = req.user;
-  // CHANGE HERE AFTER AUTH
-  const id = 3;
+  const id = req.user.id;
+
   try {
     const responses = await createSellerProduct(id, req.body);
     res.status(201).json({
@@ -58,11 +57,8 @@ export async function createProductController(req, res, next) {
 }
 
 export async function updateProductController(req, res, next) {
-
   const id = Number(req.params.id);
-    // const { id } = req.user;
-    // CHANGE HERE AFTER AUTH
-  const userId = 12;
+  const userId = req.user.id;
 
   try {
     const responses = await updateUserProduct(id, userId, req.body);
