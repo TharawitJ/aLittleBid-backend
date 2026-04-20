@@ -19,8 +19,8 @@ Authorization: Bearer {{ACCESS_TOKEN}}
 
 {
   "bidderId": 1000,
-  "auctionId": 7, 
-  "amount": 2000
+  "auctionId": 5, 
+  "amount": 2500
 }
 
 ###  get all bids
@@ -34,12 +34,12 @@ content-type: application/json
 Authorization: Bearer {{ACCESS_TOKEN}} 
 
 ###  DELETE bid by id
-DELETE  {{BASE_URL}}/bids/cmo2r3yls0001muyzlgxs5mke
+DELETE  {{BASE_URL}}/bids/cmo2rh5x80002z8yz6i9zo4u2
 content-type: application/json
 Authorization: Bearer {{ACCESS_TOKEN}} 
 
 ###  Update bid status
-POST  {{BASE_URL}}/bids
+PATCH  {{BASE_URL}}/bids/cmo6t436j0000enyzn106ulhi
 content-type: application/json
 Authorization: Bearer {{ACCESS_TOKEN}} 
 

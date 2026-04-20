@@ -2,7 +2,7 @@ import prisma from "../lib/prismaClient.js";
 import createError from "http-errors";
 import { getUserById } from "./user.service.js";
 import { getAuctionById } from "./auction.service.js";
-import { isBiddableDuration, sanitizeData } from "../utils/helpers.js";
+import { isBiddableDuration, sanitizeData, validateBidOwnerAndFetch } from "../utils/helpers.js";
 
 const BID_FIELDS = [
   "bidderId",
@@ -30,12 +30,12 @@ export async function getBidById(id) {
   const result = await prisma.bid.findUnique({
     where: { id }
   });
-
+  if (!result) throw createError(404, "Bid not found.");
   return result;
 }
 
 export async function updateBidById(id, data) {
-  const result = await prisma.bid.delete({
+  const result = await prisma.bid.update({
     where: { id },
     data: data
   });
@@ -64,13 +64,19 @@ export async function placeBid(userId, auctionId, data) {
   return result;
 }
 
-export async function deleteUserBid(bidId, data) {
-  // update to isWinning
+export async function deleteUserBid(bidId, userId) {
+   await getUserById(userId);
+
+   const bid =  await validateBidOwnerAndFetch(bidId, userId);
+
+   const result = await deleteBidById(bid.id);
+   return result;
 }
 
 export async function updateBidStatus(bidId, data) {
-  // update to isWinning
+  await getBidById(bidId);
+  const updateBidStatus = sanitizeData(data, UPDATE_BID_FIELDS);
+
+  const result = await updateBidById(bidId, updateBidStatus);
+  return result;
 }
-
-
-
