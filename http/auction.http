@@ -1,47 +1,51 @@
 @BASE_URL = http://localhost:3000/api
+@ACCESS_TOKEN = {{login.response.body.token}}
+
 ### Login
-POST {{BASE_URL}}/auth/login 
+# @name login
+POST {{BASE_URL}}/auth/login HTTP/1.1
 content-type: application/json
 
 {
- "identity" : "tanacom0249@hotmail.com",
- "password" : "Jammy@1223_3432"
+ "email" : "tester22@gmail.com",
+ "password" : "88889999"
 }
+
 
 ###  Create auction
 POST  {{BASE_URL}}/auctions
 content-type: application/json
-Authorization: Bearer 
+Authorization: Bearer {{ACCESS_TOKEN}}
 
 {
-  "productId": 56,
+  "productId": 104,
   "startTime": "2026-04-17T10:04:24.997Z",
   "endTime": "2026-06-09T06:13:00.000Z",
   "startingPrice": 1,
   "reservePrice": 1000,
   "minIncrement": 100,
-  "status": "ACTIVE"
+  "status": "WAITING"
 }
 
-###  get all auction
+###  get all auctions
 GET  {{BASE_URL}}/auctions
 content-type: application/json
-Authorization: Bearer 
+Authorization: Bearer {{ACCESS_TOKEN}}  
 
 ###  get auction by id
-GET  {{BASE_URL}}/auctions/4
+GET  {{BASE_URL}}/auctions/6
 content-type: application/json
-Authorization: Bearer 
+Authorization: Bearer {{ACCESS_TOKEN}}  
 
 ###  DELETE auction by id
-DELETE  {{BASE_URL}}/auctions/2
+DELETE  {{BASE_URL}}/auctions/6
 content-type: application/json
-Authorization: Bearer 
+Authorization: Bearer {{ACCESS_TOKEN}}  
 
 ###  Update auction
-PATCH  {{BASE_URL}}/auctions/4
+PATCH  {{BASE_URL}}/auctions/7
 content-type: application/json
-Authorization: Bearer 
+Authorization: Bearer {{ACCESS_TOKEN}}  
 
 {
   "startTime": "2026-06-06T06:13:00.000Z",
@@ -49,5 +53,5 @@ Authorization: Bearer
   "startingPrice": 1,
   "reservePrice": 5500,
   "minIncrement": 200,
-  "status": "ACTIVE"
+  "status": "WAITING"
 }

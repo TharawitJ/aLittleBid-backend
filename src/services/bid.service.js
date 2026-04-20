@@ -51,9 +51,7 @@ export async function deleteBidById(id) {
 
 // SPECIFIC BID SERVICE
 export async function placeBid(userId, auctionId, data) {
-  // check user exist
-   const user = await getUserById(userId);
-  // check auction exist
+  await getUserById(userId);
   const auction = await getAuctionById(auctionId);
 
   // guard on time
@@ -66,6 +64,13 @@ export async function placeBid(userId, auctionId, data) {
   return result;
 }
 
+export async function deleteUserBid(bidId, data) {
+  // update to isWinning
+}
+
 export async function updateBidStatus(bidId, data) {
   // update to isWinning
 }
+
+
+
