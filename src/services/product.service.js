@@ -53,7 +53,7 @@ export async function deleteUserProduct(id, userId) {
 }
 
 export async function createSellerProduct(userId, data) {
-  const user = await validateAndFetchUser(userId);
+  const user = await getUserById(userId);
 
   validateSellerRole(user);
 
@@ -68,7 +68,7 @@ export async function createSellerProduct(userId, data) {
 }
 
 export async function updateUserProduct(id, userId, data) {
-  const user = await validateAndFetchUser(userId);
+  const user = await getUserById(userId);
 
   validateSellerRole(user);
 
@@ -82,12 +82,6 @@ export async function updateUserProduct(id, userId, data) {
 
   return result;
 }
-
-// export function validateSellerRole(user) {
-//     if (user.role !== "SELLER") {
-//         throw createError(403, "Access denied: Seller permissions required.");
-//     }
-// }
 
 export async function validateProductOwnerAndFetch(productId, userId) {
   const product = await getProductById(productId);

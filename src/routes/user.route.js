@@ -80,6 +80,31 @@ userRoutes.patch('/:id', authCheck, updateUserController)
  */
 userRoutes.delete('/:id', authCheck, deleteUserController);
 
+
+/**
+ * @openapi
+ * /users/{id}/addresses:
+ *   post:
+ *     summary: Create an address for specific user Id
+ *     tags: [Addresses]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *              $ref: '#/components/schemas/Address'
+ *     responses:
+ *       200:
+ *         description: Address added successfully
+ */
+userRoutes.post('/:id/addresses/', authCheck, createAddressController);
+
 /**
  * @openapi
  * /users/{id}/addresses/{addressId}:
@@ -107,30 +132,6 @@ userRoutes.delete('/:id', authCheck, deleteUserController);
  *       200:
  *         description: Address updated successfully
  */
-userRoutes.patch('/:id/addresses/:addressId', authCheck, updateAddressController)
-
-/**
- * @openapi
- * /users/{id}/addresses:
- *   post:
- *     summary: Create an address for specific user Id
- *     tags: [Addresses]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *              $ref: '#/components/schemas/Address'
- *     responses:
- *       200:
- *         description: Address added successfully
- */
-userRoutes.post('/:id/addresses/', authCheck, createAddressController)
+userRoutes.patch('/:id/addresses/:addressId', authCheck, updateAddressController);
 
 export default userRoutes;

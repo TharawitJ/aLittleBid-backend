@@ -1,73 +1,10 @@
 import express from "express";
 import { createProductController, deleteProductController, getAllCategoriesController, getAllProductsController, getProductController, updateProductController } from "../controllers/product.controller.js";
+import authCheck from "../middlewares/auth.middleware.js";
 
 const productRoutes = express.Router();
 
 // TO DO validate data, check auth
-
-/**
- * @openapi
- * /products/categories:
- *   get:
- *     summary: Get all categories
- *     tags: [Products]
- *     responses:
- *       200:
- *         description: List of all categories
- */
-productRoutes.get('/categories', getAllCategoriesController);
-
-/**
- * @openapi
- * /products:
- *   get:
- *     summary: Get all products
- *     tags: [Products]
- *     responses:
- *       200:
- *         description: List of all products
- */
-productRoutes.get('', getAllProductsController);
-
-/**
- * @openapi
- * /products/{id}:
- *   get:
- *     summary: Get product by ID
- *     tags: [Products]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Product found
- *       404:
- *         description: Product not found
- */
-productRoutes.get('/:id', getProductController);
-
-/**
- * @openapi
- * /products/{id}:
- *   delete:
- *     summary: Delete product by ID
- *     tags: [Products]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Product deleted
- *       404:
- *         description: Product not deleted
- */
-productRoutes.delete('/:id', deleteProductController);
 
 /**
  * @openapi
@@ -87,7 +24,71 @@ productRoutes.delete('/:id', deleteProductController);
  *       404:
  *         description: Fail to add product
  */
-productRoutes.post('', createProductController);
+productRoutes.post('', authCheck, createProductController);
+
+/**
+ * @openapi
+ * /products/categories:
+ *   get:
+ *     summary: Get all categories
+ *     tags: [Products]
+ *     responses:
+ *       200:
+ *         description: List of all categories
+ */
+productRoutes.get('/categories', authCheck, getAllCategoriesController);
+
+/**
+ * @openapi
+ * /products:
+ *   get:
+ *     summary: Get all products
+ *     tags: [Products]
+ *     responses:
+ *       200:
+ *         description: List of all products
+ */
+productRoutes.get('', authCheck, getAllProductsController);
+
+/**
+ * @openapi
+ * /products/{id}:
+ *   get:
+ *     summary: Get product by ID
+ *     tags: [Products]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Product found
+ *       404:
+ *         description: Product not found
+ */
+productRoutes.get('/:id', authCheck, getProductController);
+
+/**
+ * @openapi
+ * /products/{id}:
+ *   delete:
+ *     summary: Delete product by ID
+ *     tags: [Products]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Product deleted
+ *       404:
+ *         description: Product not deleted
+ */
+productRoutes.delete('/:id', authCheck, deleteProductController);
 
 /**
  * @openapi
@@ -113,6 +114,6 @@ productRoutes.post('', createProductController);
  *       404:
  *         description: Fail to update product
  */
-productRoutes.patch('/:id', updateProductController);
+productRoutes.patch('/:id', authCheck, updateProductController);
 
 export default productRoutes;

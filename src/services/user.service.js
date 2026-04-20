@@ -35,7 +35,6 @@ export async function deleteUserById(id) {
 
 export async function updateUserById(id, authenticatedId, data) {
   const user = await getUserById(id);
-  if (!user) throw createError(404, "Invalid user");
 
   if (id !== authenticatedId) {
     throw createError(403, "Forbidden: You cannot edit other users.");
