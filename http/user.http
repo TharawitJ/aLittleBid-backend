@@ -7,7 +7,7 @@ POST {{BASE_URL}}/auth/login HTTP/1.1
 content-type: application/json
 
 {
- "email" : "fruity4@gmail.com",
+ "email" : "fruity5@gmail.com",
  "password" : "loml555"
 }
 
@@ -17,12 +17,12 @@ content-type: application/json
 Authorization: Bearer {{ACCESS_TOKEN}}
 
 ###  Get user by id
-GET  {{BASE_URL}}/users/207
+GET  {{BASE_URL}}/users/208
 content-type: application/json
 Authorization: Bearer {{ACCESS_TOKEN}}
 
 ###  Update user by id
-PATCH  {{BASE_URL}}/users/207
+PATCH  {{BASE_URL}}/users/208
 content-type: application/json
 Authorization: Bearer {{ACCESS_TOKEN}}
 
@@ -40,7 +40,7 @@ content-type: application/json
 Authorization: Bearer {{ACCESS_TOKEN}}
 
 ###  Update user by id
-PATCH  {{BASE_URL}}/users/207/addresses/28
+PATCH  {{BASE_URL}}/users/208/addresses/29
 content-type: application/json
 Authorization: Bearer {{ACCESS_TOKEN}}
 

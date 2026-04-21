@@ -2,8 +2,8 @@ import express from "express";
 import { createProductController, deleteProductController, getAllCategoriesController, getAllProductsController, getProductController, updateProductController } from "../controllers/product.controller.js";
 import authCheck from "../middlewares/auth.middleware.js";
 import { validate } from "../middlewares/validate.middleware.js";
-import { createProductSchema, updateProductSchema } from "../validations/product.schema.js";
-import { idSchema } from "../validations/auth.schema.js";
+import { idSchema, createProductSchema, updateProductSchema } from "../validations/index.js";
+
 
 const productRoutes = express.Router();
 

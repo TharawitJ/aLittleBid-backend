@@ -2,8 +2,7 @@ import express from "express";
 import { createAuctionController, deleteAuctionController, getAllAuctionsController, getAuctionController, updateAuctionController } from "../controllers/auction.controller.js";
 import authCheck from "../middlewares/auth.middleware.js";
 import { validate } from "../middlewares/validate.middleware.js";
-import { idSchema } from "../validations/index.js";
-import { createAuctionSchema, updateAuctionSchema } from "../validations/auction.schema.js";
+import { idSchema, createAuctionSchema, updateAuctionSchema } from "../validations/index.js";
 
 const auctionRoutes = express.Router();
 

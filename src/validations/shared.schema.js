@@ -36,3 +36,8 @@ export const auctionSchema = z.object({
   endTime      : z.coerce.date(),
 })
 
+export const bidSchema = z.object({
+  bidderId : z.coerce.number().int().positive(),
+  auctionId: z.coerce.number().int().positive(),
+  amount   : z.coerce.number().positive(),
+})
