@@ -19,3 +19,9 @@ export const personalSchema = z.object({
   phone    : z.string().min(8),
 });
 
+export const productSchema = z.object({
+  name        : z.string().min(1),
+  description : z.string().min(1),
+  categoryId  : z.coerce.number().int().positive(),
+})
+
