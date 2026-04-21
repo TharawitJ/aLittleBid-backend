@@ -11,17 +11,20 @@ import auctionRoutes from "./routes/auction.route.js";
 import bidRoutes from "./routes/bid.route.js";
 import { createServer } from "node:http";
 import initSocket from "./sockets/index.js";
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 const app = express();
 const server = createServer(app); 
 
 const PORT = process.env.PORT || 3000;
 const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:5173";
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 initSocket(server, CLIENT_URL);
 
-console.log("Hit the route!");
-
+// DOCUMENTATIONS
+app.use('/docs', express.static(path.join(__dirname, 'docs')));
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.get('/api-docs.json', (req, res) => {
   res.setHeader('Content-Type', 'application/json');
@@ -50,3 +53,5 @@ app.use(errorHandler);
 app.listen(PORT, () => {
     console.log(`server is running at http://localhost:${PORT}`);
 });
+
+console.log("Hit the route!");
