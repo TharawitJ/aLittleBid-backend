@@ -24,7 +24,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 initSocket(server, CLIENT_URL);
 
 // DOCUMENTATIONS
-app.use('/docs', express.static(path.join(__dirname, 'docs')));
+app.use('/socket-docs', express.static(path.join(__dirname, 'docs')));
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.get('/api-docs.json', (req, res) => {
   res.setHeader('Content-Type', 'application/json');
