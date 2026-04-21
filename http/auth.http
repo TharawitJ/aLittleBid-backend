@@ -16,14 +16,14 @@ POST {{BASE_URL}}/auth/register HTTP/1.1
 content-type: application/json
 
 {
- "firstname"  : "Brody",
- "lastname"   : "Bannerman",
- "email"      : "hellokitty@gmail.com",
- "username"   : "anddy333",
- "password"   : "99999",
- "phone"      : "123433330",
+ "firstname"  : "Baa",
+ "lastname"   : "Baaa",
+ "email"      : "hellaacs@gmail.com",
+ "username"   : "anddy444",
+ "password"   : "998888",
+ "phone"      : "12345666",
  "role"       : "BUYER",
- "street"     : "333 Main St",
+ "street"     : "322 Main St",
  "city"       : "town",
  "postalCode" : "33312",
  "label"      : "Home",

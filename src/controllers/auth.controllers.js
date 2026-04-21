@@ -1,6 +1,9 @@
 import createError from "http-errors";
 import {
-  createToken, createUser, findUserByEmail } from "../services/auth.service.js";
+  createToken,
+  createUser,
+  findUserByEmail,
+} from "../services/auth.service.js";
 import bcrypt from "bcrypt";
 import prisma from "../lib/prismaClient.js";
 // import {
@@ -87,7 +90,6 @@ export async function register(req, res, next) {
         username: newUser.username,
         email: newUser.email,
         role: newUser.role,
-
         address: newUser.addresses?.[0] || null,
       },
     });
