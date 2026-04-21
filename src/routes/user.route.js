@@ -7,8 +7,6 @@ import { addressParamsSchema, idSchema, updateAddressSchema, updateUserSchema, }
 
 const userRoutes = express.Router();
 
-// TO DO validate data, check auth
-
 /**
  * @openapi
  * /users:

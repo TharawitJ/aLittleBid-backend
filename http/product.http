@@ -17,25 +17,25 @@ content-type: application/json
 Authorization: Bearer {{ACCESS_TOKEN}}
 
 {
-   "name": "Hollerix", 
-   "description": "best designer watch", 
-   "categoryId": 1
+   "name": "Lv handbag", 
+   "description": "leopard skin", 
+   "categoryId": 12
 }
 
 
 ###  Update product data
-PATCH  {{BASE_URL}}/products/104
+PATCH  {{BASE_URL}}/products/105
 content-type: application/json
 Authorization: Bearer {{ACCESS_TOKEN}} 
 
 {
-   "name": "Hollerix 3", 
-   "description": "the ultimate designer watch", 
-   "categoryId": 2
+   "name": "Best coffee mug", 
+   "description": "the ultimate designer mug", 
+   "categoryId": 16
 }
 
 ###  Get product by id
-GET  {{BASE_URL}}/products/56
+GET  {{BASE_URL}}/products/105
 content-type: application/json
 Authorization: Bearer {{ACCESS_TOKEN}} 
 
@@ -46,7 +46,7 @@ Authorization: Bearer {{ACCESS_TOKEN}}
 
 
 ###  Delete product by Id
-DELETE  {{BASE_URL}}/products/78
+DELETE  {{BASE_URL}}/products/105
 content-type: application/json
 Authorization: Bearer {{ACCESS_TOKEN}} 
 

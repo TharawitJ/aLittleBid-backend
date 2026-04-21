@@ -7,8 +7,6 @@ import { idSchema } from "../validations/auth.schema.js";
 
 const productRoutes = express.Router();
 
-// TO DO validate data, check auth
-
 /**
  * @openapi
  * /products:
