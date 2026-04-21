@@ -1,6 +1,6 @@
-import { placeBid } from "../../services/bid.service";
+import { placeBid } from "../../services/bid.service.js";
 
-export default function handleConnectionEvents(io, socket) {
+export default function handleAuctionEvents(io, socket) {
 
     // join auction event
     socket.on("join_auction", (auctionId) => {
@@ -12,7 +12,7 @@ export default function handleConnectionEvents(io, socket) {
     // leave auction event
    socket.on("leave_auction", (auctionId) => {
         socket.leave(auctionId);
-        console.log(`User ${socket.data.user.id} joined ${auctionId}`);
+        console.log(`User ${socket.data.user.id} left ${auctionId}`);
     });
 
     // redis before saving to db and do background job???
