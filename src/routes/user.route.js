@@ -1,6 +1,9 @@
 import express from "express";
 import { createAddressController, deleteUserController, getAllUsersController, getUserController, updateAddressController, updateUserController } from "../controllers/user.controller.js";
 import authCheck from "../middlewares/auth.middleware.js";
+import { validate } from "../middlewares/validate.middleware.js";
+import { addressParamsSchema, idSchema, updateAddressSchema, updateUserSchema, } from "../validations/index.js";
+
 
 const userRoutes = express.Router();
 
@@ -36,7 +39,7 @@ userRoutes.get('', authCheck, getAllUsersController);
  *       404:
  *         description: User not found
  */
-userRoutes.get('/:id', authCheck, getUserController);
+userRoutes.get('/:id', authCheck, validate(idSchema, "params"), getUserController);
 
 /**
  * @openapi
@@ -60,7 +63,7 @@ userRoutes.get('/:id', authCheck, getUserController);
  *       200:
  *         description: User updated successfully
  */
-userRoutes.patch('/:id', authCheck, updateUserController)
+userRoutes.patch('/:id', authCheck, validate(idSchema, "params"), validate(updateUserSchema, "body"), updateUserController)
 
 /**
  * @openapi
@@ -78,7 +81,7 @@ userRoutes.patch('/:id', authCheck, updateUserController)
  *       200:
  *         description: User deleted successfully
  */
-userRoutes.delete('/:id', authCheck, deleteUserController);
+userRoutes.delete('/:id', authCheck, validate(idSchema, "params"), deleteUserController);
 
 
 /**
@@ -103,7 +106,7 @@ userRoutes.delete('/:id', authCheck, deleteUserController);
  *       200:
  *         description: Address added successfully
  */
-userRoutes.post('/:id/addresses/', authCheck, createAddressController);
+userRoutes.post('/:id/addresses/', authCheck, validate(idSchema, "params"), validate(updateAddressSchema, "body"), createAddressController);
 
 /**
  * @openapi
@@ -132,6 +135,6 @@ userRoutes.post('/:id/addresses/', authCheck, createAddressController);
  *       200:
  *         description: Address updated successfully
  */
-userRoutes.patch('/:id/addresses/:addressId', authCheck, updateAddressController);
+userRoutes.patch('/:id/addresses/:addressId', authCheck, validate(addressParamsSchema, "params"), validate(updateAddressSchema, "body"), updateAddressController);
 
 export default userRoutes;
