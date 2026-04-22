@@ -9,6 +9,7 @@ export async function authCheck(req, res, next) {
     }
 
     const token = authorization.split(" ")[1];
+    console.log(token);
     const payload = verifyToken(token);
 
     req.user = payload;

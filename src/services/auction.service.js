@@ -39,8 +39,9 @@ export async function getAllAuctions() {
   return result;
 }
 
-export async function getAuctionById(id) {
-  const result = await prisma.auction.findUnique({
+export async function getAuctionById(id, tx) {
+  const db = tx || "prisma";
+  const result = await db.auction.findUnique({
     where: { id },
     include: { bids: {
       orderBy: {

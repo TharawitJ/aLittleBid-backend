@@ -2,13 +2,13 @@
 @ACCESS_TOKEN = {{login.response.body.token}}
 
 ### Login
-# @name loging
+# @name login
 POST {{BASE_URL}}/auth/login HTTP/1.1
 content-type: application/json
 
 {
- "email" : "hellokitty@gmail.com",
- "password" : "99999"
+ "email" : "tingchan@gmail.com",
+ "password" : "11111111"
 }
 
 ###  Create bid
