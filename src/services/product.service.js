@@ -20,7 +20,7 @@ export async function getProductById(id) {
     where: { id },
     include: {images: true}
   });
-
+  if (!result) throw createError(404, "Product not found.");
   return result;
 }
 
