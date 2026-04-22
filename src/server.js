@@ -50,7 +50,7 @@ app.use(notFound);
 
 app.use(errorHandler);
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
     console.log(`server is running at http://localhost:${PORT}`);
 });
 
