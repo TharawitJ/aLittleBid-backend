@@ -7,8 +7,8 @@ POST {{BASE_URL}}/auth/login HTTP/1.1
 content-type: application/json
 
 {
- "email" : "tester22@gmail.com",
- "password" : "88889999"
+ "email" : "fruity5@gmail.com",
+ "password" : "loml555"
 }
 
 ###  Register
@@ -18,11 +18,11 @@ content-type: application/json
 {
  "firstname"  : "Brody",
  "lastname"   : "Bannerman",
- "email"      : "hellokitty@gmail.com",
- "username"   : "anddy333",
- "password"   : "99999",
- "phone"      : "123433330",
- "role"       : "BUYER",
+ "email"      : "fruity5@gmail.com",
+ "username"   : "paperweight5",
+ "password"   : "loml555",
+ "phone"      : "12354315",
+ "role"       : "Seller",
  "street"     : "333 Main St",
  "city"       : "town",
  "postalCode" : "33312",
