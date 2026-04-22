@@ -1,4 +1,5 @@
 import { placeBid } from "../../services/bid.service.js";
+import { bidSchema } from "../../validations/shared.schema.js";
 
 export default function handleAuctionEvents(io, socket) {
 
@@ -29,7 +30,9 @@ export default function handleAuctionEvents(io, socket) {
             amount
         };
 
-        const savedBid = await placeBid(userId, auctionId, data)
+        const cleanedData = bidSchema.safeParse(data);
+
+        const savedBid = await placeBid(userId, cleanedData.auctionId, cleanedData);
 
         io.to(auctionId).emit("newest_bid", savedBid);
     });
