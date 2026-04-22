@@ -2,7 +2,7 @@ import { ZodError } from "zod";
 
 export default function errorHandler(err, re, res, next) {
  console.log("--- ERROR DETECTED ---");
-  // console.dir(err); 
+  console.dir(err); 
 
   let status = err.status || 500;
   let message = err.message || "Internal server error";
