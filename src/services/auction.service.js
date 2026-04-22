@@ -135,6 +135,7 @@ export async function startAuctions() {
   const updateData = { status: "ACTIVE"}
 
   const result = await updateManyAuctions(whereObject, updateData);
+  // console.log(result);
 
   if (result.count > 0) {
     console.log(`Started ${result.count} auctions.`);
