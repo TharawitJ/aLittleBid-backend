@@ -26,22 +26,22 @@ export default function handleAuctionEvents(io, socket) {
       // save to db
       const data = {
         bidderId: userId,
-        auctionId,
-        amount,
+        auctionId: Number(auctionId),
+        amount: Number(amount),
       };
-
-      const cleanedData = bidSchema.safeParse(data);
 
       const savedBid = await placeBid(
         userId,
-        cleanedData.auctionId,
-        cleanedData,
+        Number(auctionId),
+        data,
       );
 
       savedBid.username = socket.data.user.username;
 
       io.to(auctionId).emit("newest_bid", savedBid);
     } catch (error) {
+      console.log(error);
+      console.error(error.message);
       socket.emit("bid_error", { message: error.message });
     }
   });
