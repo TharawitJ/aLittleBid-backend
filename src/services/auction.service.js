@@ -42,7 +42,11 @@ export async function getAllAuctions() {
 export async function getAuctionById(id) {
   const result = await prisma.auction.findUnique({
     where: { id },
-    include: { bids: true }
+    include: { bids: {
+      orderBy: {
+        amount: 'desc',
+      }
+    } }
   });
   if (!result) throw createError(404, "Invalid auction");
   return result;
