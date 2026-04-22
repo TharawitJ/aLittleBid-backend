@@ -1,5 +1,8 @@
 import express from "express";
 import { login, register } from "../controllers/auth.controllers.js";
+import { validate } from "../middlewares/validate.middleware.js";
+import { loginSchema, registerSchema } from "../validations/index.js";
+
 // import { login, register } from "../controllers/auth.controlllers.js";
 // import * as authController from "../controllers/auth.controlllers.js";
 
@@ -23,7 +26,7 @@ const authRoute = express.Router();
  *       404:
  *         description: Fail to add log in
  */
-authRoute.post("/login", login);
+authRoute.post("/login", validate(loginSchema, "body"), login);
 
 /**
  * @openapi
@@ -43,7 +46,7 @@ authRoute.post("/login", login);
  *       404:
  *         description: Fail to add Register
  */
-authRoute.post("/register", register);
+authRoute.post("/register", alidate(registerSchema, "body"), register);
 
 // ส่วนของ OTP / Forgot Password
 // authRoute.post("/request-otp", authController.requestOTP);
