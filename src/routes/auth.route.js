@@ -46,7 +46,7 @@ authRoute.post("/login", validate(loginSchema, "body"), login);
  *       404:
  *         description: Fail to add Register
  */
-authRoute.post("/register", alidate(registerSchema, "body"), register);
+authRoute.post("/register", validate(registerSchema, "body"), register);
 
 // ส่วนของ OTP / Forgot Password
 // authRoute.post("/request-otp", authController.requestOTP);
