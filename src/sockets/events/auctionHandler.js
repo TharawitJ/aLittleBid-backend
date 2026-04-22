@@ -35,7 +35,7 @@ export default function handleAuctionEvents(io, socket) {
     });
 
     socket.on("disconnect", () => {
-        console.log('User disconnection:', socket.user.firstname);
+        console.log('User disconnection:', socket.data.user.username);
     });
 
     // what is this? socket.on("newPath", (data) => {});
