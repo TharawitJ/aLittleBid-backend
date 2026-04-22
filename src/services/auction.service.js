@@ -39,10 +39,15 @@ export async function getAllAuctions() {
   return result;
 }
 
-export async function getAuctionById(id) {
-  const result = await prisma.auction.findUnique({
+export async function getAuctionById(id, tx) {
+  const db = tx || "prisma";
+  const result = await db.auction.findUnique({
     where: { id },
-    include: { bids: true }
+    include: { bids: {
+      orderBy: {
+        amount: 'desc',
+      }
+    } }
   });
   if (!result) throw createError(404, "Invalid auction");
   return result;
@@ -52,6 +57,14 @@ export async function updateAuctionById(id, data) {
   const result = await prisma.auction.update({
     where: { id },
     data: data,
+  });
+  return result;
+}
+
+export async function updateManyAuctions(whereObject, updateData) {
+  const result = await prisma.auction.updateMany({
+    where: whereObject,
+    data: updateData
   });
   return result;
 }
@@ -110,6 +123,38 @@ export async function deleteUserAuction(auctionId, userId) {
   return result;
 }
 
-export async function updateAuctionStatus(auctionId, data) {
-  // TO DO
+// CRON JOBS
+export async function startAuctions() {
+  const now = new Date();
+
+  const whereObject = { 
+    status: "WAITING", 
+    startTime: { lte: now }
+  };
+
+  const updateData = { status: "ACTIVE"}
+
+  const result = await updateManyAuctions(whereObject, updateData);
+  // console.log(result);
+
+  if (result.count > 0) {
+    console.log(`Started ${result.count} auctions.`);
+  }
+}
+
+export async function endAuctions() {
+  const now = new Date();
+
+  const whereObject = { 
+    status: "ACTIVE", 
+    endTime: { lte: now }
+  };
+
+  const updateData = { status: "CLOSED_UNSOLD"}
+
+  const result = await updateManyAuctions(whereObject, updateData);
+
+  if (result.count > 0) {
+    console.log(`Ended ${result.count} auctions.`);
+  }
 }

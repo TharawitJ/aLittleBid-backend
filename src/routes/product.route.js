@@ -1,10 +1,11 @@
 import express from "express";
 import { createProductController, deleteProductController, getAllCategoriesController, getAllProductsController, getProductController, updateProductController } from "../controllers/product.controller.js";
 import authCheck from "../middlewares/auth.middleware.js";
+import { validate } from "../middlewares/validate.middleware.js";
+import { idSchema, createProductSchema, updateProductSchema } from "../validations/index.js";
+
 
 const productRoutes = express.Router();
-
-// TO DO validate data, check auth
 
 /**
  * @openapi
@@ -24,7 +25,7 @@ const productRoutes = express.Router();
  *       404:
  *         description: Fail to add product
  */
-productRoutes.post('', authCheck, createProductController);
+productRoutes.post('', authCheck, validate(createProductSchema, "body"), createProductController);
 
 /**
  * @openapi
@@ -68,7 +69,7 @@ productRoutes.get('', authCheck, getAllProductsController);
  *       404:
  *         description: Product not found
  */
-productRoutes.get('/:id', authCheck, getProductController);
+productRoutes.get('/:id', authCheck, validate(idSchema, "params"), getProductController);
 
 /**
  * @openapi
@@ -88,7 +89,7 @@ productRoutes.get('/:id', authCheck, getProductController);
  *       404:
  *         description: Product not deleted
  */
-productRoutes.delete('/:id', authCheck, deleteProductController);
+productRoutes.delete('/:id', authCheck, validate(idSchema, "params"), deleteProductController);
 
 /**
  * @openapi
@@ -114,6 +115,6 @@ productRoutes.delete('/:id', authCheck, deleteProductController);
  *       404:
  *         description: Fail to update product
  */
-productRoutes.patch('/:id', authCheck, updateProductController);
+productRoutes.patch('/:id', authCheck, validate(idSchema, "params"), validate(updateProductSchema, "body"), updateProductController);
 
 export default productRoutes;
