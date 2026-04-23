@@ -85,7 +85,6 @@ export async function getAuctionByProductId(id) {
        product: true,
     }
   });
-  if (!result) throw createError(404, "No auction available this product");
   return result;
 }
 
@@ -104,8 +103,6 @@ export async function createUserAuction(userId, productId, data) {
 
   const auctionExist = await getAuctionByProductId(productId);
   if (auctionExist) throw createError(403, "Auction already exist for this product");
-  // TO DO
-  // check that status !CLOSED_SOLD
 
   const auctionData = sanitizeData(data, AUCTION_FIELDS);
   const result = await createAuction(auctionData);
