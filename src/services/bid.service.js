@@ -61,6 +61,8 @@ export async function deleteBidById(id) {
 // SPECIFIC BID SERVICE
 export async function placeBid(userId, auctionId, data) {
   await getUserById(userId);
+  console.log('data', data)
+  console.log('amount', data.amount)
   const bidAmount = data.amount;
 
   return await prisma.$transaction(async (tx) => {
@@ -70,10 +72,8 @@ export async function placeBid(userId, auctionId, data) {
       // guard on time
       isBiddableDuration(auction);
 
-      console.log('auction', typeof auction.bids[0].amount)
-      console.log('bidAmount', bidAmount);
-      const currentPrice = Number(auction.bids[0].amount);
-      console.log('currentPrice', typeof currentPrice)
+      const currentPrice = Number(auction.bids[0]?.amount) || 0;
+
       if (bidAmount <= currentPrice) {
       throw new Error("Bid must be higher than current price");
       }
@@ -123,5 +123,16 @@ const includeObject =  {
   return result;
 }
 
-// get userAllBidsByUserId
-// - userId, bids auction, include product, join 3 tables
+export async function getHighestBidForAuction(auctionId) {
+
+  const auction = await getAuctionById(auctionId);
+
+  const result = await prisma.bid.findFirst({
+      where: { auctionId: auction.id },
+      orderBy: [
+        { amount: "desc" },
+        { createdAt: "asc" }
+      ]
+    });
+  return result;
+}

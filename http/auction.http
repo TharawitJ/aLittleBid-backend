@@ -17,9 +17,9 @@ content-type: application/json
 Authorization: Bearer {{ACCESS_TOKEN}}
 
 {
-  "productId": 110,
-  "startTime": "2026-04-22T08:50:00.000Z",
-  "endTime": "2026-04-22T09:00:00.000Z",
+  "productId": 117,
+  "startTime": "2026-04-16T06:43:46.000Z",
+  "endTime": "2026-04-23T09:10:46.000Z",
   "startingPrice": 1,
   "reservePrice": 15000,
   "minIncrement": 1000,

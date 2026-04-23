@@ -17,9 +17,9 @@ content-type: application/json
 Authorization: Bearer {{ACCESS_TOKEN}} 
 
 {
-  "bidderId": 1000,
-  "auctionId": 5, 
-  "amount": 3000
+  "bidderId": 20,
+  "auctionId": 27, 
+  "amount": 6000
 }
 
 ###  get all bids
