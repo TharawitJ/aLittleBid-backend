@@ -40,14 +40,15 @@ export async function getAllAuctions() {
 }
 
 export async function getAuctionById(id, tx) {
-  const db = tx || "prisma";
+  const db = tx || prisma;
   const result = await db.auction.findUnique({
     where: { id },
     include: { bids: {
       orderBy: {
         amount: 'desc',
       }
-    } }
+    },
+    product: true }
   });
   if (!result) throw createError(404, "Invalid auction");
   return result;
@@ -72,6 +73,9 @@ export async function deleteAuctionById(id) {
 export async function getAuctionByProductId(id) {
   const result = await prisma.auction.findFirst({
     where: { productId: id },
+    include: {
+      product: true
+    }
   });
   return result;
 }
@@ -82,7 +86,10 @@ export async function createUserAuction(userId, productId, data) {
   await validateProductOwnerAndFetch(productId, userId);
 
   const auctionExist = await getAuctionByProductId(productId);
-  if (auctionExist) throw createError(403, "Auction already exist for this product");
+  if (auctionExist.status !== 'CLOSED_UNSOLD') throw createError(403, "Auction already exist for this product");
+
+  // TO DO
+  // check that status !CLOSED_SOLD
 
   const auctionData = sanitizeData(data, AUCTION_FIELDS);
   const result = await createAuction(auctionData);
