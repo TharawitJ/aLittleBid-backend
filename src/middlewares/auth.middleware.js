@@ -1,6 +1,5 @@
 import createError from "http-errors";
-import jwt from "jsonwebtoken";
-import { findUserById } from "../services/auth.service.js";
+import { verifyToken } from "../utils/jwt.js";
 
 export async function authCheck(req, res, next) {
   // console.log("Headers received:", req.headers.authorization);

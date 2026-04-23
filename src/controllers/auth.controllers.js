@@ -44,15 +44,14 @@ export async function register(req, res, next) {
       !phone ||
       !street ||
       !city ||
-      !postalCode ||
       !label ||
-      !state ||
       !country ||
       !role ||
       role.length === 0
     ) {
       //  return เพื่อหยุดฟังก์ชันทันที
-      return res.status(400).json({ message: "Please fill in all fields" });
+      console.log("in validation block");
+      throw createError(400, "Please fill in all fields");
     }
 
     const user = await findUserByEmail(email);
@@ -92,6 +91,7 @@ export async function register(req, res, next) {
       },
     });
   } catch (error) {
+    console.log("Caught in controller");
     next(error);
   }
 }

@@ -132,6 +132,12 @@ model Auction {
   updatedAt         DateTime      @updatedAt @db.Timestamp(0)
   payments          Payment[]
   bids              Bid[]
+
+  // Makes Start Cron fast: Checks status first, then finds the time
+  @@index([status, startTime]) 
+
+   // Makes End Cron fast: Checks status first, then finds the time
+  @@index([status, endTime])
 }
 
 model Bid {

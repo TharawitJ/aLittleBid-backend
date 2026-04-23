@@ -66,7 +66,32 @@ const options = {
             amount: { type: 'decimal', example: 10 },
             isWinning: {type: 'boolean', example: false}
           }
-        },  
+        }, 
+        Login: {
+          type: 'object',
+          properties: {
+            email: { type: 'string', example: 'egghead@arc.com' },
+            password:  { type: 'string', example: 'lucky7in*myhead' }
+          }
+        },   
+        Register: {
+          type: 'object',
+          properties: {
+            username: { type: 'string', example: 'benjaminbutton' },
+            email: { type: 'string', example: 'egghead@arc.com' },
+            password:  { type: 'string', example: 'lucky7in*myhead' },
+            firstname: { type: 'string', example: 'benjamin' },
+            lastname: { type: 'string', example: 'button' },
+            phone:  { type: 'string', example: '0947392909' },
+            role: { type: 'string', example: "BUYER" },
+            label: { type: 'string', example: 'SCHOOL' },
+            street: { type: 'string', example: 'Wannasorn building' },
+            city: { type: 'string', example: 'Bangkok' },
+            state: { type: 'string', example: 'BKK city' },
+            postalCode: { type: 'string', example: '01400' },
+            country: { type: 'string', example: 'Bangkok' },
+          }
+        },   
       }
     },
   },

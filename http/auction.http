@@ -7,10 +7,9 @@ POST {{BASE_URL}}/auth/login HTTP/1.1
 content-type: application/json
 
 {
- "email" : "tester22@gmail.com",
- "password" : "88889999"
+ "email" : "fruity5@gmail.com",
+ "password" : "loml555"
 }
-
 
 ###  Create auction
 POST  {{BASE_URL}}/auctions
@@ -18,12 +17,12 @@ content-type: application/json
 Authorization: Bearer {{ACCESS_TOKEN}}
 
 {
-  "productId": 104,
-  "startTime": "2026-04-17T10:04:24.997Z",
-  "endTime": "2026-06-09T06:13:00.000Z",
+  "productId": 110,
+  "startTime": "2026-04-22T08:50:00.000Z",
+  "endTime": "2026-04-22T09:00:00.000Z",
   "startingPrice": 1,
-  "reservePrice": 1000,
-  "minIncrement": 100,
+  "reservePrice": 15000,
+  "minIncrement": 1000,
   "status": "WAITING"
 }
 
@@ -38,19 +37,19 @@ content-type: application/json
 Authorization: Bearer {{ACCESS_TOKEN}}  
 
 ###  DELETE auction by id
-DELETE  {{BASE_URL}}/auctions/6
+DELETE  {{BASE_URL}}/auctions/10
 content-type: application/json
 Authorization: Bearer {{ACCESS_TOKEN}}  
 
 ###  Update auction
-PATCH  {{BASE_URL}}/auctions/7
+PATCH  {{BASE_URL}}/auctions/10
 content-type: application/json
 Authorization: Bearer {{ACCESS_TOKEN}}  
 
 {
   "startTime": "2026-06-06T06:13:00.000Z",
   "endTime": "2026-06-09T06:13:00.000Z",
-  "startingPrice": 1,
+  "startingPrice": 1000,
   "reservePrice": 5500,
   "minIncrement": 200,
   "status": "WAITING"
