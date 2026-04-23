@@ -1,4 +1,4 @@
-import { deleteUserBid, getAllBids, getBidById, getBidsByUserId, placeBid, updateBidStatus } from "../services/bid.service.js";
+import { deleteUserBid, getAllBids, getBidById, getBidsProductsByUserId, placeBid, updateBidStatus } from "../services/bid.service.js";
 
 export async function getAllBidsController(req, res, next) {
 
@@ -75,7 +75,7 @@ export async function getBidsByUserIdController(req, res, next) {
    const id = req.params.id;
 
   try {
-    const responses = await getBidsByUserId(id);
+    const responses = await getBidsProductsByUserId(id);
     res.status(201).json({
       message: "User bids retrieved successfully",
       responses,

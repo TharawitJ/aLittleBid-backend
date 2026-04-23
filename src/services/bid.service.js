@@ -27,9 +27,10 @@ export async function getAllBids() {
   return result;
 }
 
-export async function getBidsWhere(whereObject) {
+export async function getBidsWhere(whereObject, includeObject) {
   const result = await prisma.bid.findMany({
     where: whereObject,
+    include: includeObject || {}
   });
   return result;
 }
@@ -102,7 +103,7 @@ export async function updateBidStatus(bidId, data) {
   return result;
 }
 
-export async function getBidsByUserId(userId) {
+export async function getBidsProductsByUserId(userId) {
 
   await getUserById(userId);
  
@@ -110,7 +111,15 @@ export async function getBidsByUserId(userId) {
     bidderId: userId
   };
 
-  const result = await getBidsWhere(whereObject);
+const includeObject =  {
+    auction: {
+      include: {
+        product: true, 
+      },
+    },
+  }
+
+  const result = await getBidsWhere(whereObject, includeObject);
   return result;
 }
 
