@@ -17,6 +17,9 @@ info:
     // To Listen
     socket.on('newest_bid', (data) => console.log(data)); 
 
+      // Winner
+    socket.on('auction_ended', (data) => console.log(data)); 
+
     // To Leave Auction
     socket.emit('leave_auction', 123);
     ```
@@ -42,6 +45,10 @@ channels:
         name: send_bid
         payload:
           $ref: '#/components/schemas/BidPayload'
+      winningBid:
+        name: auction_ended
+        payload:
+          $ref: '#/components/schemas/WinningBidPayload'
       newestBid:
         name: newest_bid
         payload:
@@ -77,6 +84,16 @@ operations:
       $ref: '#/channels/root'
     messages:
       - $ref: '#/channels/root/messages/newestBid'
+  onAuctionEnded:
+    action: send
+    summary: Broadcast winning bid
+    description: |
+      **Frontend Action:** Use `socket.on('auction_ended', (data) => { ... })` 
+      to update the winner is resolved.
+    channel:
+      $ref: '#/channels/root'
+    messages:
+      - $ref: '#/channels/root/messages/winningBid'
   emitLeaveAuction:
     action: receive
     summary: Leave an auction room
@@ -89,6 +106,14 @@ operations:
       - $ref: '#/channels/root/messages/leaveAuction'
 components:
   schemas:
+    WinningBidPayload:
+      type: object
+      properties:
+        winnerId:
+          type: integer
+        amount:
+          type: number
+          minimum: 0
     BidPayload:
       type: object
       properties:

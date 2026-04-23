@@ -27,6 +27,14 @@ export async function getAllBids() {
   return result;
 }
 
+export async function getBidsWhere(whereObject, includeObject) {
+  const result = await prisma.bid.findMany({
+    where: whereObject,
+    include: includeObject || {}
+  });
+  return result;
+}
+
 export async function getBidById(id) {
   const result = await prisma.bid.findUnique({
     where: { id }
@@ -53,6 +61,8 @@ export async function deleteBidById(id) {
 // SPECIFIC BID SERVICE
 export async function placeBid(userId, auctionId, data) {
   await getUserById(userId);
+  console.log('data', data)
+  console.log('amount', data.amount)
   const bidAmount = data.amount;
 
   return await prisma.$transaction(async (tx) => {
@@ -62,10 +72,8 @@ export async function placeBid(userId, auctionId, data) {
       // guard on time
       isBiddableDuration(auction);
 
-      console.log('auction', typeof auction.bids[0].amount)
-      console.log('bidAmount', bidAmount);
-      const currentPrice = Number(auction.bids[0].amount);
-      console.log('currentPrice', typeof currentPrice)
+      const currentPrice = Number(auction.bids[0]?.amount) || 0;
+
       if (bidAmount <= currentPrice) {
       throw new Error("Bid must be higher than current price");
       }
@@ -92,5 +100,39 @@ export async function updateBidStatus(bidId, data) {
   const updateBidStatus = sanitizeData(data, UPDATE_BID_FIELDS);
 
   const result = await updateBidById(bidId, updateBidStatus);
+  return result;
+}
+
+export async function getBidsProductsByUserId(userId) {
+
+  await getUserById(userId);
+ 
+  const whereObject = {
+    bidderId: userId
+  };
+
+const includeObject =  {
+    auction: {
+      include: {
+        product: true, 
+      },
+    },
+  }
+
+  const result = await getBidsWhere(whereObject, includeObject);
+  return result;
+}
+
+export async function getHighestBidForAuction(auctionId) {
+
+  const auction = await getAuctionById(auctionId);
+
+  const result = await prisma.bid.findFirst({
+      where: { auctionId: auction.id },
+      orderBy: [
+        { amount: "desc" },
+        { createdAt: "asc" }
+      ]
+    });
   return result;
 }

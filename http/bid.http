@@ -17,9 +17,9 @@ content-type: application/json
 Authorization: Bearer {{ACCESS_TOKEN}} 
 
 {
-  "bidderId": 1000,
-  "auctionId": 5, 
-  "amount": 3000
+  "bidderId": 20,
+  "auctionId": 27, 
+  "amount": 6000
 }
 
 ###  get all bids
@@ -29,6 +29,11 @@ Authorization: Bearer {{ACCESS_TOKEN}}
 
 ###  get bid by id
 GET  {{BASE_URL}}/bids/cmo2quvvz0000muyzswdp4eh3
+content-type: application/json
+Authorization: Bearer {{ACCESS_TOKEN}} 
+
+###  get bids by user id
+GET  {{BASE_URL}}/bids/user/99
 content-type: application/json
 Authorization: Bearer {{ACCESS_TOKEN}} 
 
