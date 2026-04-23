@@ -1,7 +1,14 @@
-import { createAddress, deleteUserById, getAllUsers, getUserById, updateUserAddress, updateUserById } from "../services/user.service.js";
+import {
+  createAddress,
+  deleteUserById,
+  getAllUsers,
+  getUserById,
+  updateUserAddress,
+  updateUserById,
+} from "../services/user.service.js";
 
 export async function getUserController(req, res, next) {
-    const id = Number(req.params.id);
+  const { id } = req.user;
   try {
     const responses = await getUserById(id);
     res.status(201).json({
@@ -14,7 +21,7 @@ export async function getUserController(req, res, next) {
 }
 
 export async function deleteUserController(req, res, next) {
-    const id = Number(req.params.id);
+  const id = Number(req.params.id);
   try {
     const responses = await deleteUserById(id);
     res.status(201).json({
@@ -27,7 +34,6 @@ export async function deleteUserController(req, res, next) {
 }
 
 export async function getAllUsersController(req, res, next) {
-
   try {
     const responses = await getAllUsers();
     res.status(201).json({
@@ -40,9 +46,9 @@ export async function getAllUsersController(req, res, next) {
 }
 
 export async function updateUserController(req, res, next) {
-    const id = Number(req.params.id);
-    const authenticatedId = req.user.id;
-    
+  const id = Number(req.params.id);
+  const authenticatedId = req.user.id;
+
   try {
     const responses = await updateUserById(id, authenticatedId, req.body);
     res.status(201).json({
@@ -55,9 +61,9 @@ export async function updateUserController(req, res, next) {
 }
 
 export async function updateAddressController(req, res, next) {
-    const id = Number(req.params.id);
-    const addressId = Number(req.params.addressId);
-    
+  const id = Number(req.params.id);
+  const addressId = Number(req.params.addressId);
+
   try {
     const responses = await updateUserAddress(id, addressId, req.body);
     res.status(201).json({
@@ -70,8 +76,8 @@ export async function updateAddressController(req, res, next) {
 }
 
 export async function createAddressController(req, res, next) {
-    const userId = Number(req.params.id);
-    
+  const userId = Number(req.params.id);
+
   try {
     const responses = await createAddress(userId, req.body);
     res.status(201).json({

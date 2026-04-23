@@ -92,7 +92,7 @@ export const findUserByOtp = async (email, otp) => {
       email: email,
       resetOtp: otp,
       resetOtpExpires: {
-        gt: new Date(), // ต้องมากกว่าเวลาปัจจุบัน (ยังไม่หมดอายุ)
+        gt: new Date(),
       },
     },
   });

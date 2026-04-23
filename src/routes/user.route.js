@@ -1,5 +1,12 @@
 import express from "express";
-import { createAddressController, deleteUserController, getAllUsersController, getUserController, updateAddressController, updateUserController } from "../controllers/user.controller.js";
+import {
+  createAddressController,
+  deleteUserController,
+  getAllUsersController,
+  getUserController,
+  updateAddressController,
+  updateUserController,
+} from "../controllers/user.controller.js";
 import authCheck from "../middlewares/auth.middleware.js";
 
 const userRoutes = express.Router();
@@ -16,7 +23,7 @@ const userRoutes = express.Router();
  *       200:
  *         description: List of all users
  */
-userRoutes.get('', authCheck, getAllUsersController);
+userRoutes.get("", authCheck, getAllUsersController);
 
 /**
  * @openapi
@@ -36,7 +43,7 @@ userRoutes.get('', authCheck, getAllUsersController);
  *       404:
  *         description: User not found
  */
-userRoutes.get('/:id', authCheck, getUserController);
+userRoutes.get("/me", authCheck, getUserController);
 
 /**
  * @openapi
@@ -60,7 +67,7 @@ userRoutes.get('/:id', authCheck, getUserController);
  *       200:
  *         description: User updated successfully
  */
-userRoutes.patch('/:id', authCheck, updateUserController)
+userRoutes.patch("/:id", authCheck, updateUserController);
 
 /**
  * @openapi
@@ -78,8 +85,7 @@ userRoutes.patch('/:id', authCheck, updateUserController)
  *       200:
  *         description: User deleted successfully
  */
-userRoutes.delete('/:id', authCheck, deleteUserController);
-
+userRoutes.delete("/:id", authCheck, deleteUserController);
 
 /**
  * @openapi
@@ -103,7 +109,7 @@ userRoutes.delete('/:id', authCheck, deleteUserController);
  *       200:
  *         description: Address added successfully
  */
-userRoutes.post('/:id/addresses/', authCheck, createAddressController);
+userRoutes.post("/:id/addresses/", authCheck, createAddressController);
 
 /**
  * @openapi
@@ -132,6 +138,10 @@ userRoutes.post('/:id/addresses/', authCheck, createAddressController);
  *       200:
  *         description: Address updated successfully
  */
-userRoutes.patch('/:id/addresses/:addressId', authCheck, updateAddressController);
+userRoutes.patch(
+  "/:id/addresses/:addressId",
+  authCheck,
+  updateAddressController,
+);
 
 export default userRoutes;
