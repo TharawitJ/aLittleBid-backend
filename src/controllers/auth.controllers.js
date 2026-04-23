@@ -225,7 +225,7 @@ export async function googleLogin(req, res) {
           username: email.split("@")[0],
           password: "GOOGLE_USER_PASSWORD",
           role: "BUYER",
-          phone: "0000000000",
+          phone: " ",
           avatarUrl: picture,
         },
       });
