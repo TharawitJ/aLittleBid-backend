@@ -17,8 +17,8 @@ content-type: application/json
 Authorization: Bearer {{ACCESS_TOKEN}}
 
 {
-   "name": "gucci handbag", 
-   "description": "leopard skin", 
+   "name": "holy water", 
+   "description": "long live", 
    "categoryId": 13
 }
 
