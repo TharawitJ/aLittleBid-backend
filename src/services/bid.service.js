@@ -27,6 +27,13 @@ export async function getAllBids() {
   return result;
 }
 
+export async function getBidsWhere(whereObject) {
+  const result = await prisma.bid.findMany({
+    where: whereObject,
+  });
+  return result;
+}
+
 export async function getBidById(id) {
   const result = await prisma.bid.findUnique({
     where: { id }
@@ -94,3 +101,18 @@ export async function updateBidStatus(bidId, data) {
   const result = await updateBidById(bidId, updateBidStatus);
   return result;
 }
+
+export async function getBidsByUserId(userId) {
+
+  await getUserById(userId);
+ 
+  const whereObject = {
+    bidderId: userId
+  };
+
+  const result = await getBidsWhere(whereObject);
+  return result;
+}
+
+// get userAllBidsByUserId
+// - userId, bids auction, include product, join 3 tables

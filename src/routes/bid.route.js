@@ -4,6 +4,7 @@ import {
   deleteBidController,
   getAllBidsController,
   getBidController,
+  getBidsByUserIdController,
   updateBidController,
 } from "../controllers/bid.controller.js";
 import authCheck from "../middlewares/auth.middleware.js";
@@ -45,6 +46,26 @@ bidRoutes.post("", authCheck, validate(createBidSchema, "body"), createBidContro
  *         description: Fail to retrieve Bids
  */
 bidRoutes.get("", authCheck, getAllBidsController);
+
+/**
+ * @openapi
+ * /bids/user/{id}:
+ *   get:
+ *     summary: Get bids by user id
+ *     tags: [Bids]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: User bids retrieved successfully
+ *       404:
+ *         description: Fail to retrieve Bids
+ */
+bidRoutes.get("/user/:id", authCheck, validate(idSchema, "params"), getBidsByUserIdController);
 
 /**
  * @openapi

@@ -1,4 +1,4 @@
-import { deleteUserBid, getAllBids, getBidById, placeBid, updateBidStatus } from "../services/bid.service.js";
+import { deleteUserBid, getAllBids, getBidById, getBidsByUserId, placeBid, updateBidStatus } from "../services/bid.service.js";
 
 export async function getAllBidsController(req, res, next) {
 
@@ -64,6 +64,20 @@ export async function updateBidController(req, res, next) {
     const responses = await updateBidStatus(id, req.body);
     res.status(201).json({
       message: "Bid status updated successfully",
+      responses,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function getBidsByUserIdController(req, res, next) {
+   const id = req.params.id;
+
+  try {
+    const responses = await getBidsByUserId(id);
+    res.status(201).json({
+      message: "User bids retrieved successfully",
       responses,
     });
   } catch (error) {
