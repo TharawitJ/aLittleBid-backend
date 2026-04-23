@@ -47,7 +47,8 @@ export async function getAuctionById(id, tx) {
       orderBy: {
         amount: 'desc',
       }
-    }}
+    },
+    product: true }
   });
   if (!result) throw createError(404, "Invalid auction");
   return result;
@@ -80,6 +81,9 @@ export async function deleteAuctionById(id) {
 export async function getAuctionByProductId(id) {
   const result = await prisma.auction.findFirst({
     where: { productId: id },
+    include: {
+       product: true,
+    }
   });
   if (!result) throw createError(404, "No auction available this product");
   return result;
