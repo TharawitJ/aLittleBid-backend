@@ -165,7 +165,7 @@ export async function endAuctions() {
 
   const auctionsToProcess = await prisma.auction.findMany({
     where: { status: "ACTIVE", endTime: { lte: now } },
-    include: { bid: { orderBy: { amount: "desc" }, take: 1 } },
+    include: { bids: { orderBy: { amount: "desc" }, take: 1 } },
   });
 
   if (auctionsToProcess.length === 0) return;

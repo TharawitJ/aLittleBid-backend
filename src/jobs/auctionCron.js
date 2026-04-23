@@ -13,19 +13,19 @@ export const auctionStatusUpdateTask = cron.schedule("0 * * * * *", async () => 
 });
 
 // schedule auctions
-const auctionTimers = new Map();
+// const auctionTimers = new Map();
 
-export function scheduleAuctionEnd(auction) {
-  const delay = new Date(auction.endTime) - new Date();
+// export function scheduleAuctionEnd(auction) {
+//   const delay = new Date(auction.endTime) - new Date();
 
-  if (delay <= 0) return;
+//   if (delay <= 0) return;
 
-  console.log(`Scheduling auction ${auction.id} to end in ${delay}m`);
+//   console.log(`Scheduling auction ${auction.id} to end in ${delay}m`);
 
-  const timer = setTimeout(async () => {
-    await endAuctionAndPickWinner(auction.id);
-    auctionTimers.delete(auction.id);
-  }, delay);
+//   const timer = setTimeout(async () => {
+//     await endAuctionAndPickWinner(auction.id);
+//     auctionTimers.delete(auction.id);
+//   }, delay);
 
-  auctionTimers.set(auction.id, timer);
-}
+//   auctionTimers.set(auction.id, timer);
+// }
