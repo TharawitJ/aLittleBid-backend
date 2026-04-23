@@ -1,5 +1,5 @@
 import express from "express";
-import { createAuctionController, deleteAuctionController, getAllAuctionsController, getAuctionController, updateAuctionController } from "../controllers/auction.controller.js";
+import { createAuctionController, deleteAuctionController, getAllAuctionsController, getAuctionByProductIdController, getAuctionController, updateAuctionController } from "../controllers/auction.controller.js";
 import authCheck from "../middlewares/auth.middleware.js";
 import { validate } from "../middlewares/validate.middleware.js";
 import { idSchema, createAuctionSchema, updateAuctionSchema } from "../validations/index.js";
@@ -65,6 +65,26 @@ auctionRoutes.patch('/:id', authCheck, validate(idSchema, "params"), validate(up
  *         description: Fail to fetch auctions
  */
 auctionRoutes.get('', authCheck, getAllAuctionsController);
+
+/**
+ * @openapi
+ * /auctions/product/{id}:
+ *   get:
+ *     summary: Get auction by product id
+ *     tags: [Auctions]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Auction retrieved successfully
+ *       404:
+ *         description: Fail to fetch auction
+ */
+auctionRoutes.get('/product/:id', authCheck, validate(idSchema, "params"), getAuctionByProductIdController);
 
 /**
  * @openapi
