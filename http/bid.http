@@ -32,6 +32,11 @@ GET  {{BASE_URL}}/bids/cmo2quvvz0000muyzswdp4eh3
 content-type: application/json
 Authorization: Bearer {{ACCESS_TOKEN}} 
 
+###  get bids by user id
+GET  {{BASE_URL}}/bids/user/99
+content-type: application/json
+Authorization: Bearer {{ACCESS_TOKEN}} 
+
 ###  DELETE bid by id
 DELETE  {{BASE_URL}}/bids/cmo2rh5x80002z8yz6i9zo4u2
 content-type: application/json
