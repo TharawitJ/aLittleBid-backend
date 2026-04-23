@@ -123,5 +123,16 @@ const includeObject =  {
   return result;
 }
 
-// get userAllBidsByUserId
-// - userId, bids auction, include product, join 3 tables
+export async function getHighestBidForAuction(auctionId) {
+
+  const auction = await getAuctionById(auctionId);
+
+  const result = await prisma.bid.findFirst({
+      where: { auctionId: auction.id },
+      orderBy: [
+        { amount: "desc" },
+        { createdAt: "asc" }
+      ]
+    });
+  return result;
+}

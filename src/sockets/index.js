@@ -2,6 +2,20 @@ import { Server } from "socket.io";
 import { socketAuthMiddleware } from "./middlewares/auth.js";
 import handleAuctionEvents from "./events/auctionHandler.js";
 
+// socketStore
+let io;
+
+export const setIo = (instance) => {
+    io = instance;
+};
+
+export const getIo = () => {
+    if (!io) {
+        console.log("Socket.io not initialized!");
+    }
+    return io;
+};
+
 export default function initSocket(server, CLIENT_URL) {
     const io = new Server(server, {
         cors: { origin: CLIENT_URL},
@@ -10,6 +24,8 @@ export default function initSocket(server, CLIENT_URL) {
 
     // CHECK SOCKET AUTH
     io.use(socketAuthMiddleware);
+
+    setIo(io);
 
     // Connect incoming socket to handshake globally
     io.on("connection", (socket) => {
