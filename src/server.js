@@ -13,6 +13,7 @@ import { createServer } from "node:http";
 import initSocket from "./sockets/index.js";
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { auctionStatusUpdateTask } from "./jobs/auctionCron.js";
 
 const app = express();
 const server = createServer(app); 
@@ -38,6 +39,8 @@ app.use(cors({
 );
 
 app.use(express.json());
+
+auctionStatusUpdateTask.start();
 
 app.use("/api/auth", authRoute);
 app.use('/api/users', userRoutes);

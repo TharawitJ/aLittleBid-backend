@@ -63,7 +63,7 @@ async function main() {
   await prisma.image.createMany({
     data: Array.from({ length: 100 }).map(() => ({
         imageUrl: faker.image.url(),
-        productId: randBetween(1, 43),
+        productId: randBetween(1, 20),
     })),
   });
 }

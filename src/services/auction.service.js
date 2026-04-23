@@ -62,6 +62,14 @@ export async function updateAuctionById(id, data) {
   return result;
 }
 
+export async function updateManyAuctions(whereObject, updateData) {
+  const result = await prisma.auction.updateMany({
+    where: whereObject,
+    data: updateData
+  });
+  return result;
+}
+
 export async function deleteAuctionById(id) {
   const result = await prisma.auction.delete({
     where: { id },
@@ -77,6 +85,15 @@ export async function getAuctionByProductId(id) {
       product: true
     }
   });
+  if (!result) throw createError(404, "No auction available this product");
+  return result;
+}
+
+export async function getAuctionsByProductId(id) {
+  const result = await prisma.auction.findMany({
+    where: { productId: id },
+  });
+  if (!result) throw createError(404, "No auction available this product");
   return result;
 }
 
@@ -87,9 +104,6 @@ export async function createUserAuction(userId, productId, data) {
 
   const auctionExist = await getAuctionByProductId(productId);
   if (auctionExist.status !== 'CLOSED_UNSOLD') throw createError(403, "Auction already exist for this product");
-
-  // TO DO
-  // check that status !CLOSED_SOLD
 
   const auctionData = sanitizeData(data, AUCTION_FIELDS);
   const result = await createAuction(auctionData);
@@ -122,6 +136,38 @@ export async function deleteUserAuction(auctionId, userId) {
   return result;
 }
 
-export async function updateAuctionStatus(auctionId, data) {
-  // TO DO
+// CRON JOBS
+export async function startAuctions() {
+  const now = new Date();
+
+  const whereObject = { 
+    status: "WAITING", 
+    startTime: { lte: now }
+  };
+
+  const updateData = { status: "ACTIVE"}
+
+  const result = await updateManyAuctions(whereObject, updateData);
+  // console.log(result);
+
+  if (result.count > 0) {
+    console.log(`Started ${result.count} auctions.`);
+  }
+}
+
+export async function endAuctions() {
+  const now = new Date();
+
+  const whereObject = { 
+    status: "ACTIVE", 
+    endTime: { lte: now }
+  };
+
+  const updateData = { status: "CLOSED_UNSOLD"}
+
+  const result = await updateManyAuctions(whereObject, updateData);
+
+  if (result.count > 0) {
+    console.log(`Ended ${result.count} auctions.`);
+  }
 }

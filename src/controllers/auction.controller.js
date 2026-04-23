@@ -1,4 +1,4 @@
-import { createUserAuction, deleteUserAuction, getAllAuctions, getAuctionById, updateUserAuction } from "../services/auction.service.js";
+import { createUserAuction, deleteUserAuction, getAllAuctions, getAuctionById, getAuctionByProductId, updateUserAuction } from "../services/auction.service.js";
 
 export async function getAllAuctionsController(req, res, next) {
   try {
@@ -17,6 +17,20 @@ export async function getAuctionController(req, res, next) {
 
   try {
     const responses = await getAuctionById(id);
+    res.status(201).json({
+      message: "Auction retrieved successfully",
+      responses,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function getAuctionByProductIdController(req, res, next) {
+    const id = Number(req.params.id);
+
+  try {
+    const responses = await getAuctionByProductId(id);
     res.status(201).json({
       message: "Auction retrieved successfully",
       responses,

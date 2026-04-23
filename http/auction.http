@@ -36,6 +36,11 @@ GET  {{BASE_URL}}/auctions/5
 content-type: application/json
 Authorization: Bearer {{ACCESS_TOKEN}}  
 
+###  get auction by product id
+GET  {{BASE_URL}}/auctions/product/56
+content-type: application/json
+Authorization: Bearer {{ACCESS_TOKEN}}  
+
 ###  DELETE auction by id
 DELETE  {{BASE_URL}}/auctions/10
 content-type: application/json
