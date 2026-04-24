@@ -170,11 +170,15 @@ export async function endAuctions() {
 
   if (auctionsToProcess.length === 0) return;
 
+  let bid;
+
   for (const auction of auctionsToProcess) {
     const highestBid = auction.bids[0];
 
+    // check that highest bid is higher than reserve price, otherwise return and emit no winner
+
     if (highestBid) {
-      await prisma.bid.update({
+      bid = await prisma.bid.update({
         where: { id: highestBid.id },
         data: { isWinning: true } 
       });
@@ -195,11 +199,16 @@ export async function endAuctions() {
 
       if (highestBid) {
         io.to(`${auction.id}`).emit("auction_ended", {
+          bidId: bid.id,
           winnerId: highestBid.userId,
           amount: highestBid.amount,
         });
       } else {
-        io.to(`${auction.id}`).emit("auction_ended", "No winner");
+        io.to(`${auction.id}`).emit("auction_ended", {
+          winnerId: null,
+          amount: null,
+          bidId: null,
+        });
       }
     }
   }

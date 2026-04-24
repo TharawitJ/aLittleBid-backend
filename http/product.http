@@ -17,8 +17,8 @@ content-type: application/json
 Authorization: Bearer {{ACCESS_TOKEN}}
 
 {
-   "name": "holy water", 
-   "description": "long live", 
+   "name": "holy ghost", 
+   "description": "loml", 
    "categoryId": 13
 }
 

@@ -15,7 +15,7 @@ export const UPDATE_BID_FIELDS = [
 ];
 
 export async function createBid(data, tx) {
-  const db = tx || "prisma";
+  const db = tx || prisma;
   const result = await db.bid.create({
     data: data
   });
@@ -73,6 +73,8 @@ export async function placeBid(userId, auctionId, data) {
       isBiddableDuration(auction);
 
       const currentPrice = Number(auction.bids[0]?.amount) || 0;
+
+      // isBiddableAmount; check that price is oldPrice + increment from auction.minIncrement
 
       if (bidAmount <= currentPrice) {
       throw new Error("Bid must be higher than current price");
