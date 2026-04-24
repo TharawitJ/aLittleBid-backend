@@ -4,6 +4,6 @@ import { createCheckoutController } from "../controllers/payment.controller.js";
 
 const paymentRoutes = express.Router();
 
-paymentRoutes.post('/auction/:auctionId/:bidId', authCheck, createCheckoutController);
+paymentRoutes.post('/auction/:auctionId/bid/:bidId', authCheck, createCheckoutController);
 
 export default paymentRoutes;
