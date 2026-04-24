@@ -7,10 +7,9 @@ POST {{BASE_URL}}/auth/login HTTP/1.1
 content-type: application/json
 
 {
- "email" : "hellokitty@gmail.com",
- "password" : "99999"
+ "email" : "tingchan@gmail.com",
+ "password" : "11111111"
 }
-
 
 ###  Create bid
 POST  {{BASE_URL}}/bids
@@ -18,9 +17,9 @@ content-type: application/json
 Authorization: Bearer {{ACCESS_TOKEN}} 
 
 {
-  "bidderId": 1000,
-  "auctionId": 5, 
-  "amount": 2500
+  "bidderId": 20,
+  "auctionId": 27, 
+  "amount": 6000
 }
 
 ###  get all bids
@@ -30,6 +29,11 @@ Authorization: Bearer {{ACCESS_TOKEN}}
 
 ###  get bid by id
 GET  {{BASE_URL}}/bids/cmo2quvvz0000muyzswdp4eh3
+content-type: application/json
+Authorization: Bearer {{ACCESS_TOKEN}} 
+
+###  get bids by user id
+GET  {{BASE_URL}}/bids/user/99
 content-type: application/json
 Authorization: Bearer {{ACCESS_TOKEN}} 
 

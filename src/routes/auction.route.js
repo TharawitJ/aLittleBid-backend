@@ -1,6 +1,8 @@
 import express from "express";
-import { createAuctionController, deleteAuctionController, getAllAuctionsController, getAuctionController, updateAuctionController } from "../controllers/auction.controller.js";
+import { createAuctionController, deleteAuctionController, getAllAuctionsController, getAuctionByProductIdController, getAuctionController, updateAuctionController } from "../controllers/auction.controller.js";
 import authCheck from "../middlewares/auth.middleware.js";
+import { validate } from "../middlewares/validate.middleware.js";
+import { idSchema, createAuctionSchema, updateAuctionSchema } from "../validations/index.js";
 
 const auctionRoutes = express.Router();
 
@@ -22,7 +24,7 @@ const auctionRoutes = express.Router();
  *       404:
  *         description: Fail to add auction
  */
-auctionRoutes.post('', authCheck, createAuctionController);
+auctionRoutes.post('', authCheck, validate(createAuctionSchema, "body"), createAuctionController);
 
 /**
  * @openapi
@@ -48,7 +50,7 @@ auctionRoutes.post('', authCheck, createAuctionController);
  *       404:
  *         description: Fail to update auction
  */
-auctionRoutes.patch('/:id', authCheck, updateAuctionController);
+auctionRoutes.patch('/:id', authCheck, validate(idSchema, "params"), validate(updateAuctionSchema, "body"), updateAuctionController);
 
 /**
  * @openapi
@@ -63,6 +65,26 @@ auctionRoutes.patch('/:id', authCheck, updateAuctionController);
  *         description: Fail to fetch auctions
  */
 auctionRoutes.get('', authCheck, getAllAuctionsController);
+
+/**
+ * @openapi
+ * /auctions/product/{id}:
+ *   get:
+ *     summary: Get auction by product id
+ *     tags: [Auctions]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Auction retrieved successfully
+ *       404:
+ *         description: Fail to fetch auction
+ */
+auctionRoutes.get('/product/:id', authCheck, validate(idSchema, "params"), getAuctionByProductIdController);
 
 /**
  * @openapi
@@ -82,7 +104,7 @@ auctionRoutes.get('', authCheck, getAllAuctionsController);
  *       404:
  *         description: Fail to fetch auction
  */
-auctionRoutes.get('/:id', authCheck, getAuctionController);
+auctionRoutes.get('/:id', authCheck, validate(idSchema, "params"), getAuctionController);
 
 /**
  * @openapi
@@ -102,6 +124,6 @@ auctionRoutes.get('/:id', authCheck, getAuctionController);
  *       404:
  *         description: Fail to delete auction
  */
-auctionRoutes.delete('/:id', authCheck, deleteAuctionController);
+auctionRoutes.delete('/:id', authCheck,  validate(idSchema, "params"), deleteAuctionController);
 
 export default auctionRoutes;

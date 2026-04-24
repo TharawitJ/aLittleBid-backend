@@ -7,6 +7,7 @@ import {
   validateSellerRole,
 } from "../utils/helpers.js";
 import { getUserById } from "./user.service.js";
+import { getIo } from "../sockets/index.js";
 
 const AUCTION_FIELDS = [
   "productId",
@@ -39,10 +40,18 @@ export async function getAllAuctions() {
   return result;
 }
 
-export async function getAuctionById(id) {
-  const result = await prisma.auction.findUnique({
+export async function getAuctionById(id, tx) {
+  const db = tx || prisma;
+  const result = await db.auction.findUnique({
     where: { id },
-    include: { bids: true }
+    include: {
+      bids: {
+        orderBy: {
+          amount: "desc",
+        },
+      },
+      product: true,
+    },
   });
   if (!result) throw createError(404, "Invalid auction");
   return result;
@@ -52,6 +61,14 @@ export async function updateAuctionById(id, data) {
   const result = await prisma.auction.update({
     where: { id },
     data: data,
+  });
+  return result;
+}
+
+export async function updateManyAuctions(whereObject, updateData) {
+  const result = await prisma.auction.updateMany({
+    where: whereObject,
+    data: updateData,
   });
   return result;
 }
@@ -67,7 +84,18 @@ export async function deleteAuctionById(id) {
 export async function getAuctionByProductId(id) {
   const result = await prisma.auction.findFirst({
     where: { productId: id },
+    include: {
+      product: true,
+    },
   });
+  return result;
+}
+
+export async function getAuctionsByProductId(id) {
+  const result = await prisma.auction.findMany({
+    where: { productId: id },
+  });
+  if (!result) throw createError(404, "No auction available this product");
   return result;
 }
 
@@ -77,7 +105,9 @@ export async function createUserAuction(userId, productId, data) {
   await validateProductOwnerAndFetch(productId, userId);
 
   const auctionExist = await getAuctionByProductId(productId);
-  if (auctionExist) throw createError(403, "Auction already exist for this product");
+  if (auctionExist)
+    throw createError(403, "Auction already exist for this product");
+  // THIS DOES NOT ALLOW PRODUCT TO HAVE MANY AUCIONS
 
   const auctionData = sanitizeData(data, AUCTION_FIELDS);
   const result = await createAuction(auctionData);
@@ -91,7 +121,8 @@ export async function updateUserAuction(auctionId, userId, data) {
 
   const auction = await getAuctionById(auctionId);
   await validateProductOwnerAndFetch(auction.productId, userId);
-  if (auction.status !== "WAITING") throw createError(403, "Cannot edit when auction status is pass waiting."); 
+  if (auction.status !== "WAITING")
+    throw createError(403, "Cannot edit when auction status is pass waiting.");
 
   const auctionData = sanitizeData(data, UPDATE_AUCTION_FIELDS);
   const result = await updateAuctionById(auctionId, auctionData);
@@ -110,6 +141,83 @@ export async function deleteUserAuction(auctionId, userId) {
   return result;
 }
 
-export async function updateAuctionStatus(auctionId, data) {
-  // TO DO
+// CRON JOBS
+export async function startAuctions() {
+  const now = new Date();
+
+  const whereObject = {
+    status: "WAITING",
+    startTime: { lte: now },
+  };
+
+  const updateData = { status: "ACTIVE" };
+
+  const result = await updateManyAuctions(whereObject, updateData);
+  // console.log(result);
+
+  if (result.count > 0) {
+    console.log(`Started ${result.count} auctions.`);
+  }
 }
+
+export async function endAuctions() {
+  const now = new Date();
+
+  const auctionsToProcess = await prisma.auction.findMany({
+    where: { status: "ACTIVE", endTime: { lte: now } },
+    include: { bids: { orderBy: { amount: "desc" }, take: 1 } },
+  });
+
+  if (auctionsToProcess.length === 0) return;
+
+  for (const auction of auctionsToProcess) {
+    const highestBid = auction.bids[0];
+
+    if (highestBid) {
+      await prisma.bid.update({
+        where: { id: highestBid.id },
+        data: { isWinning: true } 
+      });
+
+      await prisma.auction.update({
+        where: { id: auction.id },
+        data: { status: "CLOSED_UNSOLD" },
+      });
+
+    } else {
+      await prisma.auction.update({
+        where: { id: auction.id },
+        data: { status: "CLOSED_UNSOLD" },
+      });
+
+      const io = getIo();
+      if (!io) return;
+
+      if (highestBid) {
+        io.to(`${auction.id}`).emit("auction_ended", {
+          winnerId: highestBid.userId,
+          amount: highestBid.amount,
+        });
+      } else {
+        io.to(`${auction.id}`).emit("auction_ended", "No winner");
+      }
+    }
+  }
+}
+
+// export async function endAuctions() {
+//   const now = new Date();
+
+//   const whereObject = {
+//     status: "ACTIVE",
+//     endTime: { lte: now }
+//   };
+
+//   const updateData = { status: "CLOSED_UNSOLD"}
+
+//   const auctions = await updateManyAuctions(whereObject, updateData);
+
+//   if (auctions.count > 0) {
+//     console.log(`Ended ${auctions.count} auctions.`);
+//   }
+// }

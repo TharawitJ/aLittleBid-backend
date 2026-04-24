@@ -7,8 +7,8 @@ POST {{BASE_URL}}/auth/login HTTP/1.1
 content-type: application/json
 
 {
- "email" : "tester22@gmail.com",
- "password" : "88889999"
+ "email" : "fruity5@gmail.com",
+ "password" : "loml555"
 }
 
 ###  Create product
@@ -17,21 +17,21 @@ content-type: application/json
 Authorization: Bearer {{ACCESS_TOKEN}}
 
 {
-   "name": "Hollerix", 
-   "description": "best designer watch", 
-   "categoryId": 1
+   "name": "holy water", 
+   "description": "long live", 
+   "categoryId": 13
 }
 
 
 ###  Update product data
-PATCH  {{BASE_URL}}/products/104
+PATCH  {{BASE_URL}}/products/108
 content-type: application/json
 Authorization: Bearer {{ACCESS_TOKEN}} 
 
 {
-   "name": "Hollerix 3", 
-   "description": "the ultimate designer watch", 
-   "categoryId": 2
+   "name": "Best coffee mug", 
+   "description": "the ultimate designer mug", 
+   "categoryId": 16
 }
 
 ###  Get product by id
@@ -46,7 +46,7 @@ Authorization: Bearer {{ACCESS_TOKEN}}
 
 
 ###  Delete product by Id
-DELETE  {{BASE_URL}}/products/78
+DELETE  {{BASE_URL}}/products/108
 content-type: application/json
 Authorization: Bearer {{ACCESS_TOKEN}} 
 

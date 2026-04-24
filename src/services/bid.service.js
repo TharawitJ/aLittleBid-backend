@@ -4,18 +4,19 @@ import { getUserById } from "./user.service.js";
 import { getAuctionById } from "./auction.service.js";
 import { isBiddableDuration, sanitizeData, validateBidOwnerAndFetch } from "../utils/helpers.js";
 
-const BID_FIELDS = [
+export const BID_FIELDS = [
   "bidderId",
   "auctionId", 
   "amount"
 ];
 
-const UPDATE_BID_FIELDS = [
+export const UPDATE_BID_FIELDS = [
   "isWinning"
 ];
 
-export async function createBid(data) {
-  const result = await prisma.bid.create({
+export async function createBid(data, tx) {
+  const db = tx || "prisma";
+  const result = await db.bid.create({
     data: data
   });
   return result;
@@ -23,6 +24,14 @@ export async function createBid(data) {
 
 export async function getAllBids() {
   const result = await prisma.bid.findMany();
+  return result;
+}
+
+export async function getBidsWhere(whereObject, includeObject) {
+  const result = await prisma.bid.findMany({
+    where: whereObject,
+    include: includeObject || {}
+  });
   return result;
 }
 
@@ -52,16 +61,29 @@ export async function deleteBidById(id) {
 // SPECIFIC BID SERVICE
 export async function placeBid(userId, auctionId, data) {
   await getUserById(userId);
-  const auction = await getAuctionById(auctionId);
+  console.log('data', data)
+  console.log('amount', data.amount)
+  const bidAmount = data.amount;
 
-  // guard on time
-  isBiddableDuration(auction);
-  
-  const bidData = sanitizeData(data, BID_FIELDS);
-  bidData.bidderId = userId;
-  
-  const result = await createBid(bidData);
-  return result;
+  return await prisma.$transaction(async (tx) => {
+   
+      const auction = await getAuctionById(auctionId, tx);
+
+      // guard on time
+      isBiddableDuration(auction);
+
+      const currentPrice = Number(auction.bids[0]?.amount) || 0;
+
+      if (bidAmount <= currentPrice) {
+      throw new Error("Bid must be higher than current price");
+      }
+
+      const bidData = sanitizeData(data, BID_FIELDS);
+      bidData.bidderId = userId;
+
+      return await createBid(bidData, tx);
+
+  });
 }
 
 export async function deleteUserBid(bidId, userId) {
@@ -78,5 +100,39 @@ export async function updateBidStatus(bidId, data) {
   const updateBidStatus = sanitizeData(data, UPDATE_BID_FIELDS);
 
   const result = await updateBidById(bidId, updateBidStatus);
+  return result;
+}
+
+export async function getBidsProductsByUserId(userId) {
+
+  await getUserById(userId);
+ 
+  const whereObject = {
+    bidderId: userId
+  };
+
+const includeObject =  {
+    auction: {
+      include: {
+        product: true, 
+      },
+    },
+  }
+
+  const result = await getBidsWhere(whereObject, includeObject);
+  return result;
+}
+
+export async function getHighestBidForAuction(auctionId) {
+
+  const auction = await getAuctionById(auctionId);
+
+  const result = await prisma.bid.findFirst({
+      where: { auctionId: auction.id },
+      orderBy: [
+        { amount: "desc" },
+        { createdAt: "asc" }
+      ]
+    });
   return result;
 }

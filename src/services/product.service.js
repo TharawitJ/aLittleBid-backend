@@ -18,9 +18,11 @@ export async function getAllProducts() {
 export async function getProductById(id) {
   const result = await prisma.product.findUnique({
     where: { id },
-    include: {images: true}
+    include: {images: true,
+      auctions: true
+    }
   });
-
+  if (!result) throw createError(404, "Product not found.");
   return result;
 }
 

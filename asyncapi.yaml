@@ -1,0 +1,136 @@
+asyncapi: 3.1.0
+info:
+  title: A Little Bid Auction Real-time API
+  version: 1.0.0
+  description: |
+    ##   Handles real-time bidding amount and auction room management. 
+    ## Quick Start for Frontend
+    ```javascript
+    const socket = io('http://localhost:3000');
+
+    // To Join Auction
+    socket.emit('join_auction', 123);
+
+    // To Bid
+    socket.emit('send_bid', { auctionId: 123, amount: 50.5 });
+
+    // To Listen
+    socket.on('newest_bid', (data) => console.log(data)); 
+
+      // Winner
+    socket.on('auction_ended', (data) => console.log(data)); 
+
+    // To Leave Auction
+    socket.emit('leave_auction', 123);
+    ```
+servers:
+  dev:
+    host: 'localhost:3000'
+    protocol: socket.io
+channels:
+  root:
+    address: /
+    messages:
+      joinAuction:
+        name: join_auction
+        payload:
+          type: integer
+          description: The ID of the auction to join.
+      leaveAuction:
+        name: leave_auction
+        payload:
+          type: integer
+          description: The ID of the auction to leave.
+      sendBid:
+        name: send_bid
+        payload:
+          $ref: '#/components/schemas/BidPayload'
+      winningBid:
+        name: auction_ended
+        payload:
+          $ref: '#/components/schemas/WinningBidPayload'
+      newestBid:
+        name: newest_bid
+        payload:
+          $ref: '#/components/schemas/SavedBid'
+operations:
+  emitJoinAuction:
+    action: receive
+    summary: Join an auction room
+    description: |
+      **Frontend Action:** Use `socket.emit('join_auction', auctionId)` 
+      to start receiving updates for a specific auction.
+    channel:
+      $ref: '#/channels/root'
+    messages:
+      - $ref: '#/channels/root/messages/joinAuction'
+  emitSendBid:
+    action: receive
+    summary: Send a bid to the auction room
+    description: |
+      **Frontend Action:** Use `socket.emit('send_bid', auctionId)` 
+      to send bid for a specific auction.
+    channel:
+      $ref: '#/channels/root'
+    messages:
+      - $ref: '#/channels/root/messages/sendBid'
+  onNewestBid:
+    action: send
+    summary: Listen for new bids
+    description: |
+      **Frontend Action:** Use `socket.on('newest_bid', (data) => { ... })` 
+      to update the UI when a new bid is placed by any user.
+    channel:
+      $ref: '#/channels/root'
+    messages:
+      - $ref: '#/channels/root/messages/newestBid'
+  onAuctionEnded:
+    action: send
+    summary: Broadcast winning bid
+    description: |
+      **Frontend Action:** Use `socket.on('auction_ended', (data) => { ... })` 
+      to update the winner is resolved.
+    channel:
+      $ref: '#/channels/root'
+    messages:
+      - $ref: '#/channels/root/messages/winningBid'
+  emitLeaveAuction:
+    action: receive
+    summary: Leave an auction room
+    description: |
+      **Frontend Action:** Use `socket.emit('leave_auction', auctionId)` 
+      to leave for a specific auction.
+    channel:
+      $ref: '#/channels/root'
+    messages:
+      - $ref: '#/channels/root/messages/leaveAuction'
+components:
+  schemas:
+    WinningBidPayload:
+      type: object
+      properties:
+        winnerId:
+          type: integer
+        amount:
+          type: number
+          minimum: 0
+    BidPayload:
+      type: object
+      properties:
+        auctionId:
+          type: integer
+        amount:
+          type: number
+          minimum: 0
+    SavedBid:
+      type: object
+      properties:
+        bidderId:
+          type: integer
+        auctionId:
+          type: integer
+        amount:
+          type: number
+        createdAt:
+          type: string
+          format: date-time
