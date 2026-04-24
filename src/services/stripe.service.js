@@ -25,6 +25,8 @@ export async function createStripeCheckoutSession(auctionId, data) {
 
 // SPECIFIC SERVICE
 export async function createUserCheckoutSession(userid, auctionId, data) {
-      //  check that the userId is theBidderId pls
+      //  check that bid exist
+      // check that bid is highest
+      // call stripe checkout 
 
 }
