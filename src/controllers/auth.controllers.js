@@ -242,9 +242,11 @@ export async function googleLogin(req, res) {
       token: jwtToken,
       // 3. ส่ง avatarUrl กลับไปให้ Frontend
       user: {
+        id: user.id,
         name: `${user.firstname} ${user.lastname}`,
         email: user.email,
         avatarUrl: user.avatarUrl,
+        role: user.role,
       },
     });
   } catch (error) {

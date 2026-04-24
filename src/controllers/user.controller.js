@@ -6,6 +6,7 @@ import {
   updateUserAddress,
   updateUserById,
 } from "../services/user.service.js";
+import jwt from "jsonwebtoken";
 
 export async function getUserController(req, res, next) {
   const { id } = req.user;

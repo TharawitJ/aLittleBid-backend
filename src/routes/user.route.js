@@ -48,7 +48,7 @@ userRoutes.get("", authCheck, getAllUsersController);
  *       404:
  *         description: User not found
  */
-userRoutes.get("/me", authCheck, getUserController);
+userRoutes.get("/:id", authCheck, getUserController);
 
 /**
  * @openapi
