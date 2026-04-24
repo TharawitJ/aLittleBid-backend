@@ -60,3 +60,40 @@ export function isBiddableDuration(auction) {
     throw createError(400, "This auction has already ended.");
   }
 }
+
+export function isBiddableAmount(auction, bidAmount) {
+  
+      const highestBid = Number(auction.bids[0]?.amount) || 0;
+      const startingPrice = Number(auction.startingPrice) || 0;
+  
+      const currentPrice = Number(auction.bids[0]?.amount) || auction.startingPrice;
+
+      if (bidAmount <= currentPrice) {
+      throw new Error("Bid must be higher than current price.");
+      }
+
+      // isBiddableAmount; check that price is oldPrice + increment from auction.minIncrement
+
+      if (currentPrice + bidAmount < currentPrice + auction.minIncrement) {
+        throw new Error(`Bid must increase by ${auction.minIncrement} THB.`);
+      }
+
+      return true;
+}
+
+export function isAuctionableTime(startTime, endTime) {
+  const now = new Date();
+
+  // check that startTime is not less than now
+  if (startTime < now) {
+    throw createError(400, `Start time cannot be less than now.`);
+  }
+
+  if (endTime < now) {
+    throw createError(400, "End time cannot be less than now.");
+  }
+
+  if (endTime < startTime) {
+    throw createError(400, "End time cannot be less than start time.");
+  }
+}

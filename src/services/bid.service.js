@@ -61,8 +61,6 @@ export async function deleteBidById(id) {
 // SPECIFIC BID SERVICE
 export async function placeBid(userId, auctionId, data) {
   await getUserById(userId);
-  console.log('data', data)
-  console.log('amount', data.amount)
   const bidAmount = data.amount;
 
   return await prisma.$transaction(async (tx) => {
@@ -74,6 +72,7 @@ export async function placeBid(userId, auctionId, data) {
 
       const currentPrice = Number(auction.bids[0]?.amount) || 0;
 
+      // guard on price
       // isBiddableAmount; check that price is oldPrice + increment from auction.minIncrement
 
       if (bidAmount <= currentPrice) {
