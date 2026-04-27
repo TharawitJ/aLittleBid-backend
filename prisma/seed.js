@@ -50,15 +50,15 @@ async function main() {
   //   skipDuplicates: true,
   // });
 
-  // await prisma.product.createMany({
-  //   data: Array.from({ length: 43 }).map(() => ({
-  //     name: faker.commerce.productName(),
-  //     description: faker.commerce.productDescription(),
-  //     categoryId: randBetween(1, 10),
-  //     sellerId: randBetween(1, 30),
-  //   })),
-  //   skipDuplicates: true,
-  // });
+  await prisma.product.createMany({
+    data: Array.from({ length: 43 }).map(() => ({
+      name: faker.commerce.productName(),
+      description: faker.commerce.productDescription(),
+      categoryId: randBetween(1, 10),
+      sellerId: randBetween(1, 30),
+    })),
+    // skipDuplicates: true,
+  });
 
   await prisma.image.createMany({
     data: Array.from({ length: 100 }).map(() => ({
