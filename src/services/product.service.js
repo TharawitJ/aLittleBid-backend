@@ -18,7 +18,8 @@ export async function getAllProducts() {
 export async function getProductById(id) {
   const result = await prisma.product.findUnique({
     where: { id },
-    include: {images: true,
+    include: {
+      images: true,
       auctions: true
     }
   });
@@ -111,3 +112,30 @@ export async function getValidCategory(id) {
     if (!category) throw createError(404, "Category not found");
     return category;
 }
+
+////////////////////////////////////////////////////////
+// IMAGE SERVICE
+
+export async function getAllImages() {
+  const result = await prisma.image.findMany();
+  return result;
+}
+
+export async function getImageById(id) {
+    const result = await prisma.image.findUnique({where: {id}});
+    if (!result) throw createError(404, "Image not found");
+    return result;
+}
+
+export async function createImage(data) {
+    const result = await prisma.image.create({data: data});
+    return result;
+}
+
+export async function deleteImageById(id) {
+    const result = await prisma.image.delete({where: {id}});
+    return result;
+}
+
+// SPECIFIC USER SERVICE FOR CREATE USER PRODUCT IMAGE
+// DELETE USER PRODUCT IMAGE

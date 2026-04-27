@@ -37,8 +37,9 @@ export default function handleAuctionEvents(io, socket) {
       );
 
       savedBid.username = socket.data.user.username;
-
+      console.log('[server] emitting newest_bid to room:', auctionId, savedBid)
       io.to(auctionId).emit("newest_bid", savedBid);
+
     } catch (error) {
       console.log(error);
       console.error(error.message);
@@ -49,6 +50,4 @@ export default function handleAuctionEvents(io, socket) {
   socket.on("disconnect", () => {
     console.log("User disconnection:", socket.data.user.username);
   });
-
-  // what is this? socket.on("newPath", (data) => {});
 }
