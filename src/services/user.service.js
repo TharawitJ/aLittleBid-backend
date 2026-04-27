@@ -10,6 +10,11 @@ const USER_DATA_FIELDS = [
   "phone"    
 ];
 
+const USER_PUBLIC_SELECT = {
+  id: true,
+  username: true,
+};
+
 export async function getAllUsers() {
   const result = await prisma.user.findMany();
 
@@ -18,7 +23,7 @@ export async function getAllUsers() {
 
 export async function getAllUsersSpecific() {
   const result = await prisma.user.findMany({
-  select: { id: true, username: true }
+  select: USER_PUBLIC_SELECT
 });
 
   return result;
