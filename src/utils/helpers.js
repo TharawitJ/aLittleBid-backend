@@ -65,17 +65,14 @@ export function isBiddableAmount(auction, bidAmount) {
   
       const highestBid = Number(auction.bids[0]?.amount) || 0;
       const startingPrice = Number(auction.startingPrice) || 0;
+      const minIncrement = Number(auction.minIncrement);
   
-      const currentPrice = Number(auction.bids[0]?.amount) || auction.startingPrice;
+      const currentHighestPrice = highestBid || startingPrice;
+       const minimumBid = currentHighestPrice + minIncrement;
+      
 
-      if (bidAmount <= currentPrice) {
-      throw new Error("Bid must be higher than current price.");
-      }
-
-      // isBiddableAmount; check that price is oldPrice + increment from auction.minIncrement
-
-      if (currentPrice + bidAmount < currentPrice + auction.minIncrement) {
-        throw new Error(`Bid must increase by ${auction.minIncrement} THB.`);
+      if (bidAmount < minimumBid) {
+        throw  createError(400, `Bid must be higher than current price and must increase by ${minIncrement} THB.`);
       }
 
       return true;
@@ -84,16 +81,15 @@ export function isBiddableAmount(auction, bidAmount) {
 export function isAuctionableTime(startTime, endTime) {
   const now = new Date();
 
-  // check that startTime is not less than now
   if (startTime < now) {
-    throw createError(400, `Start time cannot be less than now.`);
+    throw createError(400, `Start time cannot be in the past.`);
   }
 
   if (endTime < now) {
-    throw createError(400, "End time cannot be less than now.");
+    throw createError(400, "End time cannot be in the past.");
   }
 
-  if (endTime < startTime) {
+  if (endTime <= startTime) {
     throw createError(400, "End time cannot be less than start time.");
   }
 }

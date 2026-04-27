@@ -2,7 +2,7 @@ import prisma from "../lib/prismaClient.js";
 import createError from "http-errors";
 import { getUserById } from "./user.service.js";
 import { getAuctionById } from "./auction.service.js";
-import { isBiddableDuration, sanitizeData, validateBidOwnerAndFetch } from "../utils/helpers.js";
+import { isBiddableAmount, isBiddableDuration, sanitizeData, validateBidOwnerAndFetch } from "../utils/helpers.js";
 
 export const BID_FIELDS = [
   "bidderId",
@@ -73,7 +73,7 @@ export async function placeBid(userId, auctionId, data) {
       const currentPrice = Number(auction.bids[0]?.amount) || 0;
 
       // guard on price
-      // isBiddableAmount; check that price is oldPrice + increment from auction.minIncrement
+      isBiddableAmount(auction, bidAmount);
 
       if (bidAmount <= currentPrice) {
       throw new Error("Bid must be higher than current price");

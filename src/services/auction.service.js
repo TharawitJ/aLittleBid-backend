@@ -2,6 +2,7 @@ import prisma from "../lib/prismaClient.js";
 import createError from "http-errors";
 
 import {
+  isAuctionableTime,
   sanitizeData,
   validateProductOwnerAndFetch,
   validateSellerRole,
@@ -108,6 +109,9 @@ export async function createUserAuction(userId, productId, data) {
   if (auctionExist)
     throw createError(403, "Auction already exist for this product");
   // THIS DOES NOT ALLOW PRODUCT TO HAVE MANY AUCIONS
+
+  // guard against time
+  isAuctionableTime(data.startTime, data.endTime);
 
   const auctionData = sanitizeData(data, AUCTION_FIELDS);
   const result = await createAuction(auctionData);
