@@ -35,7 +35,7 @@ Authorization: Bearer {{ACCESS_TOKEN}}
 }
 
 ###  Get product by id
-GET  {{BASE_URL}}/products/56
+GET  {{BASE_URL}}/products/36
 content-type: application/json
 Authorization: Bearer {{ACCESS_TOKEN}} 
 
@@ -50,7 +50,37 @@ DELETE  {{BASE_URL}}/products/108
 content-type: application/json
 Authorization: Bearer {{ACCESS_TOKEN}} 
 
+### ### ### ### ### ###  CATEGORY HTTP ### ### ### 
+
 ###  Get all categories
 GET  {{BASE_URL}}/products/categories
+content-type: application/json
+Authorization: Bearer {{ACCESS_TOKEN}} 
+
+
+### ### ### ### ### ###  IMAGE HTTP ### ### ### 
+
+###  Create image
+POST  {{BASE_URL}}/products/images
+content-type: application/json
+Authorization: Bearer {{ACCESS_TOKEN}}
+
+{
+   "productId": 36, 
+   "imageUrl": "https://picsum.photos/seed/picsum/200/300"
+}
+
+###  Get all images
+GET  {{BASE_URL}}/products/images
+content-type: application/json
+Authorization: Bearer {{ACCESS_TOKEN}} 
+
+###  Get image by id
+GET  {{BASE_URL}}/products/images/201
+content-type: application/json
+Authorization: Bearer {{ACCESS_TOKEN}} 
+
+###  Delete product by Id
+DELETE  {{BASE_URL}}/products/images/202
 content-type: application/json
 Authorization: Bearer {{ACCESS_TOKEN}} 
