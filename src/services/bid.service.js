@@ -2,7 +2,8 @@ import prisma from "../lib/prismaClient.js";
 import createError from "http-errors";
 import { getUserById } from "./user.service.js";
 import { getAuctionById } from "./auction.service.js";
-import { isBiddableDuration, sanitizeData, validateBidOwnerAndFetch } from "../utils/helpers.js";
+import { isBiddableAmount, isBiddableDuration, sanitizeData, validateBidOwnerAndFetch } from "../utils/helpers.js";
+import { getIo } from "../sockets/index.js";
 
 export const BID_FIELDS = [
   "bidderId",
@@ -14,8 +15,11 @@ export const UPDATE_BID_FIELDS = [
   "isWinning"
 ];
 
+const SNIPE_WINDOW_MS = 10 * 60 * 1000;
+const EXTENSION_MS   = 10 * 60 * 1000;
+
 export async function createBid(data, tx) {
-  const db = tx || "prisma";
+  const db = tx || prisma;
   const result = await db.bid.create({
     data: data
   });
@@ -61,8 +65,6 @@ export async function deleteBidById(id) {
 // SPECIFIC BID SERVICE
 export async function placeBid(userId, auctionId, data) {
   await getUserById(userId);
-  console.log('data', data)
-  console.log('amount', data.amount)
   const bidAmount = data.amount;
 
   return await prisma.$transaction(async (tx) => {
@@ -74,6 +76,9 @@ export async function placeBid(userId, auctionId, data) {
 
       const currentPrice = Number(auction.bids[0]?.amount) || 0;
 
+      // guard on price
+      isBiddableAmount(auction, bidAmount);
+
       if (bidAmount <= currentPrice) {
       throw new Error("Bid must be higher than current price");
       }
@@ -81,7 +86,11 @@ export async function placeBid(userId, auctionId, data) {
       const bidData = sanitizeData(data, BID_FIELDS);
       bidData.bidderId = userId;
 
-      return await createBid(bidData, tx);
+      const bid = await createBid(bidData, tx);
+
+       await applyAntiSnipe(auction, tx);
+
+    return bid;
 
   });
 }
@@ -135,4 +144,27 @@ export async function getHighestBidForAuction(auctionId) {
       ]
     });
   return result;
+}
+
+// ANIT-SNIPING CHECK
+export async function applyAntiSnipe(auction, tx) {
+  const now = new Date();
+  const timeLeft = auction.endTime.getTime() - now.getTime();
+
+  if (timeLeft > SNIPE_WINDOW_MS) return null;  
+
+  const newEndTime = now + new Date(EXTENSION_MS);
+
+  await tx.auction.update({
+    where: { id: auction.id },
+    data: { endTime: newEndTime },
+  });
+
+  // Emit outside transaction if you want — see note below
+  const io = getIo();
+  io?.to(`${auction.id}`).emit("end_time_extended", {
+    newEndTime: newEndTime.toISOString(),
+  });
+
+  return newEndTime;
 }
