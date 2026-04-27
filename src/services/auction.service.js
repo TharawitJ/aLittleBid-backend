@@ -175,13 +175,25 @@ export async function endAuctions() {
   if (auctionsToProcess.length === 0) return;
 
   let bid;
+  
+  const io = getIo();
+  if (!io) {console.error("no socket io found when emitting winner")};
 
   for (const auction of auctionsToProcess) {
     const highestBid = auction.bids[0];
 
-    // check that highest bid is higher than reserve price, otherwise return and emit no winner
-
     if (highestBid) {
+
+      // check that highest bid is higher than reserve price, otherwise return and emit no winner
+      if (highestBid.amount <= auction.reservePrice) {
+
+        io.to(`${auction.id}`).emit("reserve_price", {
+          message:  "Auction closed unsold, no winner. Highest bid does not meet reserve price"
+        });
+
+        throw createError(400, "Auction closed unsold, no winner. Highest bid does not meet reserve price");
+      }
+      
       bid = await prisma.bid.update({
         where: { id: highestBid.id },
         data: { isWinning: true } 
@@ -192,28 +204,24 @@ export async function endAuctions() {
         data: { status: "CLOSED_UNSOLD" },
       });
 
+      // emit winner
+       io.to(`${auction.id}`).emit("auction_ended", {
+          bidId: bid.id,
+          winnerId: highestBid.userId,
+          amount: highestBid.amount,
+        });
+
     } else {
       await prisma.auction.update({
         where: { id: auction.id },
         data: { status: "CLOSED_UNSOLD" },
       });
 
-      const io = getIo();
-      if (!io) return;
-
-      if (highestBid) {
-        io.to(`${auction.id}`).emit("auction_ended", {
-          bidId: bid.id,
-          winnerId: highestBid.userId,
-          amount: highestBid.amount,
-        });
-      } else {
-        io.to(`${auction.id}`).emit("auction_ended", {
+       io.to(`${auction.id}`).emit("auction_ended", {
           winnerId: null,
           amount: null,
           bidId: null,
         });
-      }
     }
   }
 }
