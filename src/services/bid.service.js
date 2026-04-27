@@ -153,14 +153,14 @@ export async function applyAntiSnipe(auction, tx) {
 
   if (timeLeft > SNIPE_WINDOW_MS) return null;  
 
-  const newEndTime = now + new Date(EXTENSION_MS);
+  const newEndTime = new Date(now.getTime() + EXTENSION_MS);
 
   await tx.auction.update({
     where: { id: auction.id },
     data: { endTime: newEndTime },
   });
 
-  // Emit outside transaction if you want — see note below
+  // Emit outside transaction to auction
   const io = getIo();
   io?.to(`${auction.id}`).emit("end_time_extended", {
     newEndTime: newEndTime.toISOString(),
