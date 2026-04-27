@@ -93,3 +93,53 @@ export function isAuctionableTime(startTime, endTime) {
     throw createError(400, "End time cannot be less than start time.");
   }
 }
+
+// query helper
+export function getPrismaOptions(query, searchFields = ['name', 'email']) {
+  const { 
+    page = 1, 
+    limit = 10, 
+    sortBy = 'createdAt', 
+    sortOrder = 'desc', 
+    search = '', 
+    ...filters // Captures everything else as filters
+  } = query;
+
+  // 1. Pagination & Sorting logic
+  const skip = (Number(page) - 1) * Number(limit);
+  const take = Number(limit);
+
+  // 2. Build Dynamic Filters (Exact matches)
+  // Filters out reserved keys and builds the where object
+  const where = Object.keys(filters).reduce((acc, key) => {
+    if (filters[key]) acc[key] = filters[key];
+    return acc;
+  }, {});
+
+  // 3. Add Global Search (Partial matches)
+  if (search) {
+    where.OR = searchFields.map((field) => ({
+      [field]: { contains: search, mode: 'insensitive' },
+    }));
+  }
+
+  return {
+    skip,
+    take,
+    orderBy: { [sortBy]: sortOrder },
+    where,
+  };
+}
+
+// export async function getAllUsers(queryParams) {
+//   // Define which fields are searchable for this specific model
+//   const options = getPrismaOptions(queryParams, ['name', 'email', 'username']);
+
+//   const [data, total] = await prisma.$transaction([
+//     prisma.user.findMany(options),
+//     prisma.user.count({ where: options.where })
+//   ]);
+
+//   return { data, total };
+// }
+

@@ -3,6 +3,7 @@ import createError from "http-errors";
 import { getUserById } from "./user.service.js";
 import { getAuctionById } from "./auction.service.js";
 import { isBiddableAmount, isBiddableDuration, sanitizeData, validateBidOwnerAndFetch } from "../utils/helpers.js";
+import { getIo } from "../sockets/index.js";
 
 export const BID_FIELDS = [
   "bidderId",
@@ -152,7 +153,7 @@ export async function applyAntiSnipe(auction, tx) {
 
   if (timeLeft > SNIPE_WINDOW_MS) return null;  
 
-  const newEndTime = new Date(auction.endTime.getTime() + EXTENSION_MS);
+  const newEndTime = now + new Date(EXTENSION_MS);
 
   await tx.auction.update({
     where: { id: auction.id },
