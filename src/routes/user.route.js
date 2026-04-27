@@ -1,9 +1,20 @@
 import express from "express";
-import { createAddressController, deleteUserController, getAllUsersController, getUserController, updateAddressController, updateUserController } from "../controllers/user.controller.js";
+import {
+  createAddressController,
+  deleteUserController,
+  getAllUsersController,
+  getUserController,
+  updateAddressController,
+  updateUserController,
+} from "../controllers/user.controller.js";
 import authCheck from "../middlewares/auth.middleware.js";
 import { validate } from "../middlewares/validate.middleware.js";
-import { addressParamsSchema, idSchema, updateAddressSchema, updateUserSchema, } from "../validations/index.js";
-
+import {
+  addressParamsSchema,
+  idSchema,
+  updateAddressSchema,
+  updateUserSchema,
+} from "../validations/index.js";
 
 const userRoutes = express.Router();
 
@@ -17,7 +28,7 @@ const userRoutes = express.Router();
  *       200:
  *         description: List of all users
  */
-userRoutes.get('', authCheck, getAllUsersController);
+userRoutes.get("", authCheck, getAllUsersController);
 
 /**
  * @openapi
@@ -37,7 +48,7 @@ userRoutes.get('', authCheck, getAllUsersController);
  *       404:
  *         description: User not found
  */
-userRoutes.get('/:id', authCheck, validate(idSchema, "params"), getUserController);
+userRoutes.get("/:id", authCheck, getUserController);
 
 /**
  * @openapi
@@ -61,7 +72,15 @@ userRoutes.get('/:id', authCheck, validate(idSchema, "params"), getUserControlle
  *       200:
  *         description: User updated successfully
  */
-userRoutes.patch('/:id', authCheck, validate(idSchema, "params"), validate(updateUserSchema, "body"), updateUserController)
+userRoutes.patch("/:id", authCheck, updateUserController);
+
+userRoutes.patch(
+  "/:id",
+  authCheck,
+  validate(idSchema, "params"),
+  validate(updateUserSchema, "body"),
+  updateUserController,
+);
 
 /**
  * @openapi
@@ -79,8 +98,7 @@ userRoutes.patch('/:id', authCheck, validate(idSchema, "params"), validate(updat
  *       200:
  *         description: User deleted successfully
  */
-userRoutes.delete('/:id', authCheck, validate(idSchema, "params"), deleteUserController);
-
+userRoutes.delete("/:id", authCheck, deleteUserController);
 
 /**
  * @openapi
@@ -104,7 +122,7 @@ userRoutes.delete('/:id', authCheck, validate(idSchema, "params"), deleteUserCon
  *       200:
  *         description: Address added successfully
  */
-userRoutes.post('/:id/addresses/', authCheck, validate(idSchema, "params"), validate(updateAddressSchema, "body"), createAddressController);
+userRoutes.post("/:id/addresses/", authCheck, createAddressController);
 
 /**
  * @openapi
@@ -133,6 +151,10 @@ userRoutes.post('/:id/addresses/', authCheck, validate(idSchema, "params"), vali
  *       200:
  *         description: Address updated successfully
  */
-userRoutes.patch('/:id/addresses/:addressId', authCheck, validate(addressParamsSchema, "params"), validate(updateAddressSchema, "body"), updateAddressController);
+userRoutes.patch(
+  "/:id/addresses/:addressId",
+  authCheck,
+  updateAddressController,
+);
 
 export default userRoutes;
