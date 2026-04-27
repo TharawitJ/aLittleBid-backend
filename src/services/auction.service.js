@@ -111,7 +111,7 @@ export async function createUserAuction(userId, productId, data) {
   // THIS DOES NOT ALLOW PRODUCT TO HAVE MANY AUCIONS
 
   // guard against time
-  isAuctionableTime(data.startTime, data.endTime);
+  // isAuctionableTime(data.startTime, data.endTime);
 
   const auctionData = sanitizeData(data, AUCTION_FIELDS);
   const result = await createAuction(auctionData);
@@ -209,7 +209,7 @@ export async function endAuctions() {
       // emit winner
       io.to(`${auction.id}`).emit("auction_ended", {
         bidId: bid.id,
-        winnerId: highestBid.userId,
+        winnerId: highestBid.bidderId,
         amount: highestBid.amount,
       });
     } else {
