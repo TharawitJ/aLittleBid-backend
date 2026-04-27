@@ -43,6 +43,7 @@ export async function getAllAuctions() {
 
 export async function getAuctionById(id, tx) {
   const db = tx || prisma;
+  console.log('typeof id', typeof id)
   const result = await db.auction.findUnique({
     where: { id },
     include: {
@@ -51,7 +52,9 @@ export async function getAuctionById(id, tx) {
           amount: "desc",
         },
       },
-      product: true,
+      product: {include:{
+        images:true
+      }},
     },
   });
   if (!result) throw createError(404, "Invalid auction");
