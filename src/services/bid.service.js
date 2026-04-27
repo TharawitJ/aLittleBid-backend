@@ -15,7 +15,7 @@ export const UPDATE_BID_FIELDS = [
   "isWinning"
 ];
 
-const SNIPE_WINDOW_MS = 3 * 60 * 1000;
+const SNIPE_WINDOW_MS = 2 * 60 * 1000;
 const EXTENSION_MS   = 10 * 60 * 1000;
 
 export async function createBid(data, tx) {
@@ -88,7 +88,7 @@ export async function placeBid(userId, auctionId, data) {
 
       const bid = await createBid(bidData, tx);
 
-       await applyAntiSnipe(auction, tx);
+       // await applyAntiSnipe(auction, tx);
 
     return bid;
 
