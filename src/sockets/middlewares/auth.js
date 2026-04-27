@@ -10,7 +10,7 @@ export function socketAuthMiddleware(socket, next) {
   try {
     const decoded = verifyToken(token);
     socket.data.user = decoded;
-    console.log(socket.data.user);
+    // console.log(socket.data.user);
     next();
   } catch (error) {
     next(new Error('Invalid or expired token'));

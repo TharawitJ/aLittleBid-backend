@@ -2,6 +2,7 @@ import prisma from "../lib/prismaClient.js";
 import createError from "http-errors";
 
 import {
+  isAuctionableTime,
   sanitizeData,
   validateProductOwnerAndFetch,
   validateSellerRole,
@@ -109,6 +110,9 @@ export async function createUserAuction(userId, productId, data) {
     throw createError(403, "Auction already exist for this product");
   // THIS DOES NOT ALLOW PRODUCT TO HAVE MANY AUCIONS
 
+  // guard against time
+  isAuctionableTime(data.startTime, data.endTime);
+
   const auctionData = sanitizeData(data, AUCTION_FIELDS);
   const result = await createAuction(auctionData);
 
@@ -170,13 +174,31 @@ export async function endAuctions() {
 
   if (auctionsToProcess.length === 0) return;
 
+  let bid;
+
+  const io = getIo();
+  if (!io) {
+    console.error("no socket io found when emitting winner");
+  }
+
   for (const auction of auctionsToProcess) {
     const highestBid = auction.bids[0];
 
     if (highestBid) {
-      await prisma.bid.update({
+      // check that highest bid is higher than reserve price, otherwise return and emit no winner
+      if (highestBid.amount <= auction.reservePrice) {
+        await prisma.auction.update({
+          where: { id: auction.id },
+          data: { status: "CLOSED_UNSOLD" }, 
+        });
+        io.to(`${auction.id}`).emit("reserve_not_met", {   
+          message: "Auction closed unsold, no winner. Highest bid does not meet reserve price",});
+        continue; 
+      }
+
+      bid = await prisma.bid.update({
         where: { id: highestBid.id },
-        data: { isWinning: true } 
+        data: { isWinning: true },
       });
 
       await prisma.auction.update({
@@ -184,23 +206,23 @@ export async function endAuctions() {
         data: { status: "CLOSED_UNSOLD" },
       });
 
+      // emit winner
+      io.to(`${auction.id}`).emit("auction_ended", {
+        bidId: bid.id,
+        winnerId: highestBid.userId,
+        amount: highestBid.amount,
+      });
     } else {
       await prisma.auction.update({
         where: { id: auction.id },
         data: { status: "CLOSED_UNSOLD" },
       });
 
-      const io = getIo();
-      if (!io) return;
-
-      if (highestBid) {
-        io.to(`${auction.id}`).emit("auction_ended", {
-          winnerId: highestBid.userId,
-          amount: highestBid.amount,
-        });
-      } else {
-        io.to(`${auction.id}`).emit("auction_ended", "No winner");
-      }
+      io.to(`${auction.id}`).emit("auction_ended", {
+        winnerId: null,
+        amount: null,
+        bidId: null,
+      });
     }
   }
 }
