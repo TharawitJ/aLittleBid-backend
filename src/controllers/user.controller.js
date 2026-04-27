@@ -1,4 +1,4 @@
-import { createAddress, deleteUserById, getAllUsers, getUserById, updateUserAddress, updateUserById } from "../services/user.service.js";
+import { createAddress, deleteUserById, getAllUsers, getAllUsersSpecific, getUserById, updateUserAddress, updateUserById } from "../services/user.service.js";
 
 export async function getUserController(req, res, next) {
     const id = Number(req.params.id);
@@ -29,7 +29,7 @@ export async function deleteUserController(req, res, next) {
 export async function getAllUsersController(req, res, next) {
 
   try {
-    const responses = await getAllUsers();
+    const responses = await getAllUsersSpecific();
     res.status(201).json({
       message: "All users retrieved successfully",
       responses,

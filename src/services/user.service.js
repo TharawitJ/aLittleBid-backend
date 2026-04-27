@@ -16,6 +16,14 @@ export async function getAllUsers() {
   return result;
 }
 
+export async function getAllUsersSpecific() {
+  const result = await prisma.user.findMany({
+  select: { id: true, username: true }
+});
+
+  return result;
+}
+
 export async function getUserById(id) {
   const result = await prisma.user.findUnique({
     where: { id },
