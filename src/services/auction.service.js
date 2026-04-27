@@ -191,7 +191,7 @@ export async function endAuctions() {
           where: { id: auction.id },
           data: { status: "CLOSED_UNSOLD" }, 
         });
-        io.to(`${auction.id}`).emit("reserve_price", {   
+        io.to(`${auction.id}`).emit("reserve_not_met", {   
           message: "Auction closed unsold, no winner. Highest bid does not meet reserve price",});
         continue; 
       }

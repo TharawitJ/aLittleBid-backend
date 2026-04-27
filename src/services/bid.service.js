@@ -14,6 +14,9 @@ export const UPDATE_BID_FIELDS = [
   "isWinning"
 ];
 
+const SNIPE_WINDOW_MS = 10 * 60 * 1000;
+const EXTENSION_MS   = 10 * 60 * 1000;
+
 export async function createBid(data, tx) {
   const db = tx || prisma;
   const result = await db.bid.create({
@@ -82,7 +85,11 @@ export async function placeBid(userId, auctionId, data) {
       const bidData = sanitizeData(data, BID_FIELDS);
       bidData.bidderId = userId;
 
-      return await createBid(bidData, tx);
+      const bid = await createBid(bidData, tx);
+
+       await applyAntiSnipe(auction, tx);
+
+    return bid;
 
   });
 }
@@ -136,4 +143,27 @@ export async function getHighestBidForAuction(auctionId) {
       ]
     });
   return result;
+}
+
+// ANIT-SNIPING CHECK
+export async function applyAntiSnipe(auction, tx) {
+  const now = new Date();
+  const timeLeft = auction.endTime.getTime() - now.getTime();
+
+  if (timeLeft > SNIPE_WINDOW_MS) return null;  
+
+  const newEndTime = new Date(auction.endTime.getTime() + EXTENSION_MS);
+
+  await tx.auction.update({
+    where: { id: auction.id },
+    data: { endTime: newEndTime },
+  });
+
+  // Emit outside transaction if you want — see note below
+  const io = getIo();
+  io?.to(`${auction.id}`).emit("end_time_extended", {
+    newEndTime: newEndTime.toISOString(),
+  });
+
+  return newEndTime;
 }
