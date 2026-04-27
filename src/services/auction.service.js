@@ -175,28 +175,30 @@ export async function endAuctions() {
   if (auctionsToProcess.length === 0) return;
 
   let bid;
-  
+
   const io = getIo();
-  if (!io) {console.error("no socket io found when emitting winner")};
+  if (!io) {
+    console.error("no socket io found when emitting winner");
+  }
 
   for (const auction of auctionsToProcess) {
     const highestBid = auction.bids[0];
 
     if (highestBid) {
-
       // check that highest bid is higher than reserve price, otherwise return and emit no winner
       if (highestBid.amount <= auction.reservePrice) {
-
-        io.to(`${auction.id}`).emit("reserve_price", {
-          message:  "Auction closed unsold, no winner. Highest bid does not meet reserve price"
+        await prisma.auction.update({
+          where: { id: auction.id },
+          data: { status: "CLOSED_UNSOLD" }, 
         });
-
-        throw createError(400, "Auction closed unsold, no winner. Highest bid does not meet reserve price");
+        io.to(`${auction.id}`).emit("reserve_price", {   
+          message: "Auction closed unsold, no winner. Highest bid does not meet reserve price",});
+        continue; 
       }
-      
+
       bid = await prisma.bid.update({
         where: { id: highestBid.id },
-        data: { isWinning: true } 
+        data: { isWinning: true },
       });
 
       await prisma.auction.update({
@@ -205,23 +207,22 @@ export async function endAuctions() {
       });
 
       // emit winner
-       io.to(`${auction.id}`).emit("auction_ended", {
-          bidId: bid.id,
-          winnerId: highestBid.userId,
-          amount: highestBid.amount,
-        });
-
+      io.to(`${auction.id}`).emit("auction_ended", {
+        bidId: bid.id,
+        winnerId: highestBid.userId,
+        amount: highestBid.amount,
+      });
     } else {
       await prisma.auction.update({
         where: { id: auction.id },
         data: { status: "CLOSED_UNSOLD" },
       });
 
-       io.to(`${auction.id}`).emit("auction_ended", {
-          winnerId: null,
-          amount: null,
-          bidId: null,
-        });
+      io.to(`${auction.id}`).emit("auction_ended", {
+        winnerId: null,
+        amount: null,
+        bidId: null,
+      });
     }
   }
 }
