@@ -41,3 +41,14 @@ export const bidSchema = z.object({
   auctionId: z.coerce.number().int().positive(),
   amount   : z.coerce.number().positive(),
 })
+
+export const imageSchema = z.object({
+  productId : z.coerce.number().int().positive(),
+  imageUrl   : z.string()
+  .url("Invalid URL format")
+  // .refine((url) => {
+  //   return /\.(jpg|jpeg|png|webp|gif|svg)$/i.test(url);
+  // }, {
+  //     message: "URL must point to a valid image (jpg, jpeg, png, webp, gif, or svg)"
+  // })
+});

@@ -1,4 +1,4 @@
-import { createSellerProduct, deleteUserProduct, getAllCategories, getAllProducts, getProductById, updateProduct, updateUserProduct } from "../services/product.service.js";
+import { createImage, createSellerProduct, deleteImageById, deleteUserProduct, getAllCategories, getAllImages, getAllProducts, getImageById, getProductById, updateProduct, updateUserProduct } from "../services/product.service.js";
 
 
 export async function getAllProductsController(req, res, next) {
@@ -83,3 +83,59 @@ export async function getAllCategoriesController(req, res, next) {
     next(error);
   }
 }
+
+export async function createImageController(req, res, next) {
+
+  try {
+    const responses = await createImage(req.body);
+    res.status(201).json({
+      message: "Image created successfully",
+      responses,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function getImageByIdController(req, res, next) {
+  const id = req.params.id;
+
+  try {
+    const responses = await getImageById(id);
+    res.status(201).json({
+      message: "Image created successfully",
+      responses,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function getAllImagesController(req, res, next) {
+
+  try {
+    const responses = await getAllImages();
+    res.status(201).json({
+      message: "Image retrieved successfully",
+      responses,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function deleteImageByIdController(req, res, next) {
+  const id = req.params.id;
+
+  try {
+    const responses = await deleteImageById(id);
+    res.status(201).json({
+      message: "Image deleted successfully",
+      responses,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+

@@ -91,7 +91,14 @@ const options = {
             postalCode: { type: 'string', example: '01400' },
             country: { type: 'string', example: 'Bangkok' },
           }
-        },   
+        },
+        Image: {
+          type: 'object',
+          properties: {
+            productId: { type: 'integer', example: 10 },
+            imageUrl: { type: 'string', example: "https://res.cloudinary.com/demo/image/upload/sample.jpg" },
+          }
+        },    
       }
     },
   },
