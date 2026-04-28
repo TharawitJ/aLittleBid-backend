@@ -2,9 +2,10 @@ import { createImage, createSellerProduct, deleteImageById, deleteUserProduct, g
 
 
 export async function getAllProductsController(req, res, next) {
+  // console.log('req.query', req.query);
 
   try {
-    const responses = await getAllProducts();
+    const responses = await getAllProducts(req.query);
     res.status(201).json({
       message: "All products retrieved successfully",
       responses,
