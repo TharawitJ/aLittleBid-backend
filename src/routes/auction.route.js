@@ -68,7 +68,7 @@ auctionRoutes.get('', authCheck, getAllAuctionsController);
 
 /**
  * @openapi
- * /auctions/popular/?limit:
+ * /auctions/popular?limit:
  *   get:
  *     summary: Get popular auctions with limit
  *     tags: [Auctions]
