@@ -9,6 +9,7 @@ import {
 } from "../utils/helpers.js";
 import { getUserById } from "./user.service.js";
 import { getIo } from "../sockets/index.js";
+import { scheduleAuctionStart } from "../schedulers/auctionTimerManager.js";
 
 const AUCTION_FIELDS = [
   "productId",
@@ -125,6 +126,8 @@ export async function createUserAuction(userId, productId, data) {
 
   const auctionData = sanitizeData(data, AUCTION_FIELDS);
   const result = await createAuction(auctionData);
+
+  scheduleAuctionStart(result);
 
   return result;
 }
