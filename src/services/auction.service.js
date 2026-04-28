@@ -177,6 +177,7 @@ export async function endAuctions() {
 
   if (auctionsToProcess.length === 0) return;
 
+  // update end status / winner
   let bid;
 
   const io = getIo();
@@ -230,19 +231,28 @@ export async function endAuctions() {
   }
 }
 
-// export async function endAuctions() {
-//   const now = new Date();
+// SCHEDULE
+export async function initializeAuctionStartTimers() {
+  console.log("Bootstrapping auction START timers...");
 
-//   const whereObject = {
-//     status: "ACTIVE",
-//     endTime: { lte: now }
-//   };
+  const now = new Date();
 
-//   const updateData = { status: "CLOSED_UNSOLD"}
+  const auctions = await prisma.auction.findMany({
+    where: {
+      status: "WAITING",
+      startTime: { gt: now }, // only future auctions
+    },
+  });
 
-//   const auctions = await updateManyAuctions(whereObject, updateData);
+  for (const auction of auctions) {
+    scheduleAuctionStart(auction);
+  }
 
-//   if (auctions.count > 0) {
-//     console.log(`Ended ${auctions.count} auctions.`);
-//   }
-// }
+  console.log(`Scheduled start timers for ${auctions.length} auctions`);
+}
+
+export async function startAuctionById(id) {
+  const updateData = { status: "ACTIVE" };
+  const result = await updateAuctionById(id, updateData);
+  return result;
+}
