@@ -14,6 +14,7 @@ import initSocket from "./sockets/index.js";
 import path from "path";
 import { fileURLToPath } from "url";
 import { auctionStatusUpdateTask } from "./jobs/auctionCron.js";
+import { initializeAuctionStartTimers } from "./services/auction.service.js";
 
 const app = express();
 const server = createServer(app);
@@ -54,8 +55,9 @@ app.use(notFound);
 
 app.use(errorHandler);
 
-server.listen(PORT, () => {
+server.listen(PORT, async () => {
   console.log(`server is running at http://localhost:${PORT}`);
+  await initializeAuctionStartTimers();
 });
 
 console.log("Hit the route!");
