@@ -12,7 +12,6 @@ export async function authCheck(req, res, next) {
     }
 
     const token = authorization.split(" ")[1];
-    console.log("Token extracted:", token);
 
     const payload = jwt.verify(token, process.env.JWT_SECRET, {
       algorithms: ["HS256"],

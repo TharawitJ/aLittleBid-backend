@@ -44,6 +44,7 @@ export async function getAllUsersController(req, res, next) {
 export async function updateUserController(req, res, next) {
   const id = Number(req.params.id);
   const authenticatedId = req.user.id;
+  console.log('payload at back', req.body);
 
   try {
     const responses = await updateUserById(id, authenticatedId, req.body);
