@@ -41,9 +41,14 @@ export async function getAllAuctions() {
   return result;
 }
 
+export async function getAuctionsWhere(optionsObject) {
+  const result = await prisma.auction.findMany(optionsObject);
+  return result;
+}
+
 export async function getAuctionById(id, tx) {
   const db = tx || prisma;
-  console.log('typeof id', typeof id)
+  console.log("typeof id", typeof id);
   const result = await db.auction.findUnique({
     where: { id },
     include: {
@@ -52,9 +57,11 @@ export async function getAuctionById(id, tx) {
           amount: "desc",
         },
       },
-      product: {include:{
-        images:true
-      }},
+      product: {
+        include: {
+          images: true,
+        },
+      },
     },
   });
   if (!result) throw createError(404, "Invalid auction");
@@ -114,7 +121,7 @@ export async function createUserAuction(userId, productId, data) {
   // THIS DOES NOT ALLOW PRODUCT TO HAVE MANY AUCIONS
 
   // guard against time
-  isAuctionableTime(data.startTime, data.endTime);
+  // isAuctionableTime(data.startTime, data.endTime);
 
   const auctionData = sanitizeData(data, AUCTION_FIELDS);
   const result = await createAuction(auctionData);
@@ -148,6 +155,33 @@ export async function deleteUserAuction(auctionId, userId) {
   return result;
 }
 
+export async function getPopularAuctions(limit) {
+  const optionsObject = {
+    take: limit || undefined, 
+    orderBy: {
+      bids: {_count: "desc" }
+    },
+    include: {
+      product: {
+        include: {
+          images: true,
+        },
+      },
+      _count: { select: {
+        bids: true
+      }},
+      bids: {
+      orderBy: {
+        amount: 'desc'
+      },
+      take: 1
+    }
+  }
+};
+  const result = await getAuctionsWhere(optionsObject);
+  return result;
+}
+
 // CRON JOBS
 export async function startAuctions() {
   const now = new Date();
@@ -177,6 +211,7 @@ export async function endAuctions() {
 
   if (auctionsToProcess.length === 0) return;
 
+  // update end status / winner
   let bid;
 
   const io = getIo();
@@ -192,11 +227,13 @@ export async function endAuctions() {
       if (highestBid.amount <= auction.reservePrice) {
         await prisma.auction.update({
           where: { id: auction.id },
-          data: { status: "CLOSED_UNSOLD" }, 
+          data: { status: "CLOSED_UNSOLD" },
         });
-        io.to(`${auction.id}`).emit("reserve_not_met", {   
-          message: "Auction closed unsold, no winner. Highest bid does not meet reserve price",});
-        continue; 
+        io.to(`${auction.id}`).emit("reserve_not_met", {
+          message:
+            "Auction closed unsold, no winner. Highest bid does not meet reserve price",
+        });
+        continue;
       }
 
       bid = await prisma.bid.update({
@@ -212,7 +249,7 @@ export async function endAuctions() {
       // emit winner
       io.to(`${auction.id}`).emit("auction_ended", {
         bidId: bid.id,
-        winnerId: highestBid.userId,
+        winnerId: highestBid.bidderId,
         amount: highestBid.amount,
       });
     } else {
@@ -230,19 +267,28 @@ export async function endAuctions() {
   }
 }
 
-// export async function endAuctions() {
-//   const now = new Date();
+// SCHEDULE
+export async function initializeAuctionStartTimers() {
+  console.log("Bootstrapping auction START timers...");
 
-//   const whereObject = {
-//     status: "ACTIVE",
-//     endTime: { lte: now }
-//   };
+  const now = new Date();
 
-//   const updateData = { status: "CLOSED_UNSOLD"}
+  const auctions = await prisma.auction.findMany({
+    where: {
+      status: "WAITING",
+      startTime: { gt: now }, // only future auctions
+    },
+  });
 
-//   const auctions = await updateManyAuctions(whereObject, updateData);
+  for (const auction of auctions) {
+    scheduleAuctionStart(auction);
+  }
 
-//   if (auctions.count > 0) {
-//     console.log(`Ended ${auctions.count} auctions.`);
-//   }
-// }
+  console.log(`Scheduled start timers for ${auctions.length} auctions`);
+}
+
+export async function startAuctionById(id) {
+  const updateData = { status: "ACTIVE" };
+  const result = await updateAuctionById(id, updateData);
+  return result;
+}

@@ -17,14 +17,14 @@ content-type: application/json
 Authorization: Bearer {{ACCESS_TOKEN}}
 
 {
-   "name": "holy ghost", 
-   "description": "loml", 
-   "categoryId": 13
+   "name": "trauma", 
+   "description": "front end hoho", 
+   "categoryId": 16
 }
 
 
 ###  Update product data
-PATCH  {{BASE_URL}}/products/108
+PATCH  {{BASE_URL}}/products/113
 content-type: application/json
 Authorization: Bearer {{ACCESS_TOKEN}} 
 
@@ -35,7 +35,7 @@ Authorization: Bearer {{ACCESS_TOKEN}}
 }
 
 ###  Get product by id
-GET  {{BASE_URL}}/products/36
+GET  {{BASE_URL}}/products/133
 content-type: application/json
 Authorization: Bearer {{ACCESS_TOKEN}} 
 
