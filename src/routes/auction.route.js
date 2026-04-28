@@ -1,5 +1,5 @@
 import express from "express";
-import { createAuctionController, deleteAuctionController, getAllAuctionsController, getAuctionByProductIdController, getAuctionController, updateAuctionController } from "../controllers/auction.controller.js";
+import { createAuctionController, deleteAuctionController, getAllAuctionsController, getAuctionByProductIdController, getAuctionController, getPopularAuctionsController, updateAuctionController } from "../controllers/auction.controller.js";
 import authCheck from "../middlewares/auth.middleware.js";
 import { validate } from "../middlewares/validate.middleware.js";
 import { idSchema, createAuctionSchema, updateAuctionSchema } from "../validations/index.js";
@@ -65,6 +65,20 @@ auctionRoutes.patch('/:id', authCheck, validate(idSchema, "params"), validate(up
  *         description: Fail to fetch auctions
  */
 auctionRoutes.get('', authCheck, getAllAuctionsController);
+
+/**
+ * @openapi
+ * /auctions/popular/?limit:
+ *   get:
+ *     summary: Get popular auctions with limit
+ *     tags: [Auctions]
+ *     responses:
+ *       200:
+ *         description: Auctions retrieved successfully
+ *       404:
+ *         description: Fail to fetch auctions
+ */
+auctionRoutes.get('/popular', getPopularAuctionsController);
 
 /**
  * @openapi

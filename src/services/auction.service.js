@@ -41,9 +41,14 @@ export async function getAllAuctions() {
   return result;
 }
 
+export async function getAuctionsWhere(optionsObject) {
+  const result = await prisma.auction.findMany(optionsObject);
+  return result;
+}
+
 export async function getAuctionById(id, tx) {
   const db = tx || prisma;
-  console.log('typeof id', typeof id)
+  console.log("typeof id", typeof id);
   const result = await db.auction.findUnique({
     where: { id },
     include: {
@@ -52,9 +57,11 @@ export async function getAuctionById(id, tx) {
           amount: "desc",
         },
       },
-      product: {include:{
-        images:true
-      }},
+      product: {
+        include: {
+          images: true,
+        },
+      },
     },
   });
   if (!result) throw createError(404, "Invalid auction");
@@ -148,6 +155,33 @@ export async function deleteUserAuction(auctionId, userId) {
   return result;
 }
 
+export async function getPopularAuctions(limit) {
+  const optionsObject = {
+    take: limit || undefined, 
+    orderBy: {
+      bids: {_count: "desc" }
+    },
+    include: {
+      product: {
+        include: {
+          images: true,
+        },
+      },
+      _count: { select: {
+        bids: true
+      }},
+      bids: {
+      orderBy: {
+        amount: 'desc'
+      },
+      take: 1
+    }
+  }
+};
+  const result = await getAuctionsWhere(optionsObject);
+  return result;
+}
+
 // CRON JOBS
 export async function startAuctions() {
   const now = new Date();
@@ -193,11 +227,13 @@ export async function endAuctions() {
       if (highestBid.amount <= auction.reservePrice) {
         await prisma.auction.update({
           where: { id: auction.id },
-          data: { status: "CLOSED_UNSOLD" }, 
+          data: { status: "CLOSED_UNSOLD" },
         });
-        io.to(`${auction.id}`).emit("reserve_not_met", {   
-          message: "Auction closed unsold, no winner. Highest bid does not meet reserve price",});
-        continue; 
+        io.to(`${auction.id}`).emit("reserve_not_met", {
+          message:
+            "Auction closed unsold, no winner. Highest bid does not meet reserve price",
+        });
+        continue;
       }
 
       bid = await prisma.bid.update({

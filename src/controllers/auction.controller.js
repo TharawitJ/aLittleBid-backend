@@ -1,8 +1,21 @@
-import { createUserAuction, deleteUserAuction, getAllAuctions, getAuctionById, getAuctionByProductId, updateUserAuction } from "../services/auction.service.js";
+import { createUserAuction, deleteUserAuction, getAllAuctions, getAuctionById, getAuctionByProductId, getPopularAuctions, updateUserAuction } from "../services/auction.service.js";
 
 export async function getAllAuctionsController(req, res, next) {
   try {
     const responses = await getAllAuctions();
+    res.status(201).json({
+      message: "All Auctions retrieved successfully",
+      responses,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function getPopularAuctionsController(req, res, next) {
+  const limit = Number(req.params.limit);
+  try {
+    const responses = await getPopularAuctions(limit);
     res.status(201).json({
       message: "All Auctions retrieved successfully",
       responses,
