@@ -4,9 +4,12 @@ export async function getUserController(req, res, next) {
   const { id } = req.user;
   try {
     const responses = await getUserById(id);
+
+    const { password, ...userWithoutPassword } = responses.toObject ? responses.toObject() : responses;
+
     res.status(201).json({
       message: "User retrieved successfully",
-      responses,
+      responses: userWithoutPassword,
     });
   } catch (error) {
     next(error);
