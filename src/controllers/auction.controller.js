@@ -13,11 +13,12 @@ export async function getAllAuctionsController(req, res, next) {
 }
 
 export async function getPopularAuctionsController(req, res, next) {
-  const limit = Number(req.params.limit);
+  const limit = Number(req.query.limit);
+  
   try {
     const responses = await getPopularAuctions(limit);
     res.status(201).json({
-      message: "All Auctions retrieved successfully",
+      message: "Popular Auctions retrieved successfully",
       responses,
     });
   } catch (error) {
