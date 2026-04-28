@@ -74,13 +74,13 @@ userRoutes.get("/:id", authCheck, getUserController);
  */
 userRoutes.patch("/:id", authCheck, updateUserController);
 
-userRoutes.patch(
-  "/:id",
-  authCheck,
-  validate(idSchema, "params"),
-  validate(updateUserSchema, "body"),
-  updateUserController,
-);
+// userRoutes.patch(
+//   "/:id",
+//   authCheck,
+//   validate(idSchema, "params"),
+//   validate(updateUserSchema, "body"),
+//   updateUserController,
+// );
 
 /**
  * @openapi

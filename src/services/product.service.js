@@ -7,13 +7,47 @@ const PRODUCT_FIELDS = [
   "name", "description", "categoryId"
 ];
 
-export async function getAllProducts() {
+export async function getAllProducts(filters = {}) {
+  // console.log('filters', filters)
+  const { auctionStatus } = filters;
+  // console.log('auctionStatus', auctionStatus)
+
   const result = await prisma.product.findMany({
-    include: {images: true}
+    where: {
+      // This filters the PRODUCTS list
+      auctions: auctionStatus ? {
+        some: {
+          status: auctionStatus,
+        },
+      } : undefined,
+    },
+    include: {
+      images: true,
+      // This decides which auctions are VISIBLE inside the product object
+      auctions: {
+        where: {
+          status: auctionStatus || undefined,
+        },
+      },
+    },
   });
 
   return result;
 }
+
+// export async function getProductsWhereStatus(auctionStatus) {
+//   const result = await prisma.product.findMany({
+//     include: {
+//       images: true, 
+//       auctions: {
+//         where: {
+//           status: auctionStatus || undefined,
+//         }
+//       }}
+//   });
+
+//   return result;
+// }
 
 export async function getProductById(id) {
   const result = await prisma.product.findUnique({
@@ -85,12 +119,6 @@ export async function updateUserProduct(id, userId, data) {
 
   return result;
 }
-
-// export function validateSellerRole(user) {
-//     if (user.role !== "SELLER") {
-//         throw createError(403, "Access denied: Seller permissions required.");
-//     }
-// }
 
 export async function validateProductOwnerAndFetch(productId, userId) {
   const product = await getProductById(productId);

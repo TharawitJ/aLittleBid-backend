@@ -17,7 +17,7 @@ content-type: application/json
 Authorization: Bearer {{ACCESS_TOKEN}}
 
 {
-   "name": "trauma", 
+   "name": "hunger", 
    "description": "front end hoho", 
    "categoryId": 16
 }
@@ -40,7 +40,7 @@ content-type: application/json
 Authorization: Bearer {{ACCESS_TOKEN}} 
 
 ###  Get all products
-GET  {{BASE_URL}}/products
+GET  {{BASE_URL}}/products?auctionStatus=ACTIVE
 content-type: application/json
 Authorization: Bearer {{ACCESS_TOKEN}} 
 
