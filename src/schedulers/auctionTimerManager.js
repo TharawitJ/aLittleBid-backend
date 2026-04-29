@@ -1,5 +1,5 @@
 // schedule auctions
-import { endAuctionAndPickWinner, startAuctionById } from "../services/auction.service.js";
+import { endAuctionAndPickWinner, getAuctionById, startAuctionById } from "../services/auction.service.js";
 import { getIo } from "../sockets/index.js";
 
 const auctionTimers = new Map();
@@ -70,8 +70,9 @@ const delay = end - now;
 
    const timer = setTimeout(async () => {
     try {
-      console.log('auction', auction)
-      const res = await endAuctionAndPickWinner(auction);
+      console.log('auction', auction);
+      const newest = await getAuctionById(auction);
+      const res = await endAuctionAndPickWinner(newest);
       console.log('set timer at status end', res)
     } catch (err) {
       console.error("End auction timer failed:", err);
