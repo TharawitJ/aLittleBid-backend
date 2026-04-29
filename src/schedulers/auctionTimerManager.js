@@ -68,10 +68,16 @@ const delay = end - now;
     `Scheduling END for auction ${auction.id} in ${Math.round(delay / 1000)}s`
   );
 
+  if (endTimers.has(auction.id)) {
+    clearTimeout(endTimers.get(auction.id));
+    endTimers.delete(auction.id);
+  }
+  console.log('endTimers', endTimers)
+
    const timer = setTimeout(async () => {
     try {
       console.log('auction', auction);
-      const newest = await getAuctionById(auction);
+      const newest = await getAuctionById(auction.id);
       const res = await endAuctionAndPickWinner(newest);
       console.log('set timer at status end', res)
     } catch (err) {

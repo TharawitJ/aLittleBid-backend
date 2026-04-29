@@ -4,6 +4,7 @@ import { getUserById } from "./user.service.js";
 import { getAuctionById } from "./auction.service.js";
 import { isBiddableAmount, isBiddableDuration, sanitizeData, validateBidOwnerAndFetch } from "../utils/helpers.js";
 import { getIo } from "../sockets/index.js";
+import { scheduleAuctionEnd } from "../schedulers/auctionTimerManager.js";
 
 export const BID_FIELDS = [
   "bidderId",
@@ -16,7 +17,7 @@ export const UPDATE_BID_FIELDS = [
 ];
 
 const SNIPE_WINDOW_MS = 2 * 60 * 1000;
-const EXTENSION_MS   = 2 * 60 * 1000;
+const EXTENSION_MS   = 10 * 60 * 1000;
 
 export async function createBid(data, tx) {
   const db = tx || prisma;
@@ -159,6 +160,8 @@ export async function applyAntiSnipe(auction, tx) {
     where: { id: auction.id },
     data: { endTime: newEndTime },
   });
+
+  scheduleAuctionEnd(auction);
 
   // Emit outside transaction to auction
   const io = getIo();
