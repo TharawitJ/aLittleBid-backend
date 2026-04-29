@@ -9,7 +9,7 @@ import {
 } from "../utils/helpers.js";
 import { getUserById } from "./user.service.js";
 import { getIo } from "../sockets/index.js";
-import { scheduleAuctionStart } from "../schedulers/auctionTimerManager.js";
+import { scheduleAuctionEnd, scheduleAuctionStart } from "../schedulers/auctionTimerManager.js";
 
 const AUCTION_FIELDS = [
   "productId",
@@ -126,8 +126,10 @@ export async function createUserAuction(userId, productId, data) {
 
   const auctionData = sanitizeData(data, AUCTION_FIELDS);
   const result = await createAuction(auctionData);
+  console.log('result', result)
 
-  scheduleAuctionStart(result);
+  // scheduleAuctionStart(result);
+  scheduleAuctionEnd(result);
 
   return result;
 }
@@ -214,16 +216,15 @@ export async function endAuctions() {
 
   if (auctionsToProcess.length === 0) return;
 
-  // update end status / winner
-  let bid;
+   for (const auction of auctionsToProcess) {
+    endAuctionAndPickWinner(auction);
+   }
+}
 
-  const io = getIo();
-  if (!io) {
-    console.error("no socket io found when emitting winner");
-  }
+export async function endAuctionAndPickWinner(auction) {
+    const highestBid = auction.bids ? auction.bids[0] : null;
 
-  for (const auction of auctionsToProcess) {
-    const highestBid = auction.bids[0];
+    const io = getIo();
 
     if (highestBid) {
       // check that highest bid is higher than reserve price, otherwise return and emit no winner
@@ -232,14 +233,13 @@ export async function endAuctions() {
           where: { id: auction.id },
           data: { status: "CLOSED_UNSOLD" },
         });
-        io.to(`${auction.id}`).emit("reserve_not_met", {
+        io?.to(`${auction.id}`).emit("reserve_not_met", {
           message:
             "Auction closed unsold, no winner. Highest bid does not meet reserve price",
         });
-        continue;
       }
 
-      bid = await prisma.bid.update({
+      const bid = await prisma.bid.update({
         where: { id: highestBid.id },
         data: { isWinning: true },
       });
@@ -250,7 +250,11 @@ export async function endAuctions() {
       });
 
       // emit winner
-      io.to(`${auction.id}`).emit("auction_ended", {
+      const roomName = `${auction.id}`;
+      const clientsInRoom = io.sockets.adapter.rooms.get(roomName);
+      console.log(`Emitting to room ${roomName}. Number of clients in room:`, clientsInRoom?.size || 0);
+
+      io?.to(roomName).emit("auction_ended", {
         bidId: bid.id,
         winnerId: highestBid.bidderId,
         amount: highestBid.amount,
@@ -261,13 +265,12 @@ export async function endAuctions() {
         data: { status: "CLOSED_UNSOLD" },
       });
 
-      io.to(`${auction.id}`).emit("auction_ended", {
+      io?.to(`${auction.id}`).emit("auction_ended", {
         winnerId: null,
         amount: null,
         bidId: null,
       });
     }
-  }
 }
 
 // SCHEDULE
@@ -288,6 +291,25 @@ export async function initializeAuctionStartTimers() {
   }
 
   console.log(`Scheduled start timers for ${auctions.length} auctions`);
+}
+
+export async function initializeAuctionEndTimers() {
+  console.log("Bootstrapping auction END timers...");
+
+  const now = new Date();
+
+  const auctions = await prisma.auction.findMany({
+    where: {
+      status: "ACTIVE",
+      endTime: { gt: now }, // only auctions that hasnt end time
+    },
+  });
+
+  for (const auction of auctions) {
+    scheduleAuctionEnd(auction);
+  }
+
+  console.log(`Scheduled end timers for ${auctions.length} auctions`);
 }
 
 export async function startAuctionById(id) {

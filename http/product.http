@@ -17,9 +17,9 @@ content-type: application/json
 Authorization: Bearer {{ACCESS_TOKEN}}
 
 {
-   "name": "hunger", 
+   "name": "final", 
    "description": "front end hoho", 
-   "categoryId": 16
+   "categoryId": 1
 }
 
 

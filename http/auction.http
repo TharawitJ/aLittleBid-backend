@@ -17,13 +17,13 @@ content-type: application/json
 Authorization: Bearer {{ACCESS_TOKEN}}
 
 {
-  "productId": 136,
-  "startTime": "2026-04-26T09:10:22.000Z",
-  "endTime": "2026-04-28T03:28:15.000Z",
-  "startingPrice": 10,
+  "productId": 151,
+  "startTime": "2026-04-27T17:20:08.000Z",
+  "endTime": "2026-04-28T17:49:08.000Z",
+  "startingPrice": 1,
   "reservePrice": 100,
   "minIncrement": 100,
-  "status": "ACTIVE"
+  "status": "WAITING"
 }
 
 ###  get all auctions
@@ -31,8 +31,12 @@ GET  {{BASE_URL}}/auctions
 content-type: application/json
 Authorization: Bearer {{ACCESS_TOKEN}}  
 
+###  get popular auctions
+GET  {{BASE_URL}}/auctions/popular?limit=5
+content-type: application/json
+
 ###  get auction by id
-GET  {{BASE_URL}}/auctions/45
+GET  {{BASE_URL}}/auctions/64
 content-type: application/json
 Authorization: Bearer {{ACCESS_TOKEN}}  
 
@@ -42,7 +46,7 @@ content-type: application/json
 Authorization: Bearer {{ACCESS_TOKEN}}  
 
 ###  DELETE auction by id
-DELETE  {{BASE_URL}}/auctions/47
+DELETE  {{BASE_URL}}/auctions/71
 content-type: application/json
 Authorization: Bearer {{ACCESS_TOKEN}}  
 
