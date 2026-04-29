@@ -9,6 +9,7 @@ import { swaggerSpec } from "./swagger.js";
 import authRoute from "./routes/auth.route.js";
 import auctionRoutes from "./routes/auction.route.js";
 import bidRoutes from "./routes/bid.route.js";
+import paymentRoutes from "./routes/payment.route.js";
 import { createServer } from "node:http";
 import initSocket from "./sockets/index.js";
 import path from "path";
@@ -50,6 +51,7 @@ app.use("/api/products", productRoutes);
 
 app.use("/api/auctions", auctionRoutes);
 app.use("/api/bids", bidRoutes);
+app.use("/api/payments", paymentRoutes);
 
 app.use(notFound);
 
