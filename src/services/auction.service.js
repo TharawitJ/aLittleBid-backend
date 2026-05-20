@@ -237,6 +237,7 @@ export async function endAuctionAndPickWinner(auction) {
           message:
             "Auction closed unsold, no winner. Highest bid does not meet reserve price",
         });
+        console.log('reserve not met message is sent');
       }
 
       const bid = await prisma.bid.update({
@@ -255,6 +256,7 @@ export async function endAuctionAndPickWinner(auction) {
       console.log(`Emitting to room ${roomName}. Number of clients in room:`, clientsInRoom?.size || 0);
 
       io?.to(roomName).emit("auction_ended", {
+        auctionId: auction.id,
         bidId: bid.id,
         winnerId: highestBid.bidderId,
         amount: highestBid.amount,
@@ -266,6 +268,7 @@ export async function endAuctionAndPickWinner(auction) {
       });
 
       io?.to(`${auction.id}`).emit("auction_ended", {
+        auctionId: auction.id,
         winnerId: null,
         amount: null,
         bidId: null,

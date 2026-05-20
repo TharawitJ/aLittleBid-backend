@@ -7,8 +7,8 @@ POST {{BASE_URL}}/auth/login HTTP/1.1
 content-type: application/json
 
 {
- "email" : "fruity5@gmail.com",
- "password" : "loml555"
+ "email" : "milk@gmail.com",
+ "password" : "11111111"
 }
 
 ###  Create auction
@@ -17,9 +17,9 @@ content-type: application/json
 Authorization: Bearer {{ACCESS_TOKEN}}
 
 {
-  "productId": 151,
-  "startTime": "2026-04-27T17:20:08.000Z",
-  "endTime": "2026-04-28T17:49:08.000Z",
+  "productId": 155,
+  "startTime": "2026-04-29T04:56:13.000Z",
+  "endTime": "2026-04-29T05:17:13.000Z",
   "startingPrice": 1,
   "reservePrice": 100,
   "minIncrement": 100,
@@ -46,20 +46,24 @@ content-type: application/json
 Authorization: Bearer {{ACCESS_TOKEN}}  
 
 ###  DELETE auction by id
-DELETE  {{BASE_URL}}/auctions/71
+DELETE  {{BASE_URL}}/auctions/77
 content-type: application/json
 Authorization: Bearer {{ACCESS_TOKEN}}  
 
 ###  Update auction
-PATCH  {{BASE_URL}}/auctions/10
+PATCH  {{BASE_URL}}/auctions/39
 content-type: application/json
 Authorization: Bearer {{ACCESS_TOKEN}}  
 
 {
-  "startTime": "2026-06-06T06:13:00.000Z",
-  "endTime": "2026-06-09T06:13:00.000Z",
-  "startingPrice": 1000,
-  "reservePrice": 100,
-  "minIncrement": 200,
-  "status": "WAITING"
+  "endTime": "2026-05-20T08:35:29.000Z"
 }
+
+# {
+#   "startTime": "2026-06-06T06:13:00.000Z",
+#   "endTime": "2026-05-20T08:35:29.000Z",
+#   "startingPrice": 1000,
+#   "reservePrice": 100,
+#   "minIncrement": 200,
+#   "status": "WAITING"
+# }

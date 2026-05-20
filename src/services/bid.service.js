@@ -161,7 +161,6 @@ export async function applyAntiSnipe(auction, tx) {
     data: { endTime: newEndTime },
   });
 
-  scheduleAuctionEnd(auction);
 
   // Emit outside transaction to auction
   const io = getIo();

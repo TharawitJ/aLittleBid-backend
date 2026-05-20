@@ -62,9 +62,6 @@ model User {
   products        Product[]
   addresses       Address[]
   bids            Bid[]
-  avatarUrl       String?
-  resetOtp        String?
-  resetOtpExpires DateTime?
 }
 
 model Category {
