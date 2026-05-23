@@ -227,6 +227,11 @@ export async function googleLogin(req, res) {
           role: "BUYER",
           phone: " ",
           avatarUrl: picture,
+          wallet: {
+            create: {
+              amount: 0,
+            },
+          },
         },
       });
     }
