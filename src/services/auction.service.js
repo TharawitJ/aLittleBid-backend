@@ -19,6 +19,7 @@ const AUCTION_FIELDS = [
   "reservePrice",
   "minIncrement",
   "status",
+  "type"
 ];
 
 const UPDATE_AUCTION_FIELDS = [
@@ -28,6 +29,7 @@ const UPDATE_AUCTION_FIELDS = [
   "reservePrice",
   "minIncrement",
   "status",
+  "type"
 ];
 
 export async function createAuction(data) {
@@ -145,8 +147,6 @@ export async function updateUserAuction(auctionId, userId, data) {
   // if (auction.status !== "WAITING") throw createError(403, "Cannot edit when auction status is pass waiting.");
 
   const auctionData = sanitizeData(data, UPDATE_AUCTION_FIELDS);
-  console.log('auctionData', auctionData);
-  console.log('NewendTime', auctionData.endTime);
 
   if (auctionData.endTime) {
     console.log('we are in end Timer block')

@@ -1,5 +1,5 @@
 import { z } from "zod"
-import { AuctionStatus } from "../generated/prisma/client.js"; 
+import { AuctionStatus, AuctionType } from "../generated/prisma/client.js"; 
 
 export const addressSchema = z.object({
   label     : z.string().min(1),
@@ -31,7 +31,7 @@ export const auctionSchema = z.object({
   reservePrice : z.coerce.number().positive(),
   minIncrement : z.coerce.number().positive(),
   status       : z.string().transform(val => val.toUpperCase()).pipe(z.enum(AuctionStatus)),
-
+  type         : z.string().transform(val => val.toUpperCase()).pipe(z.enum(AuctionType)),
   startTime    : z.coerce.date(),
   endTime      : z.coerce.date(),
 })

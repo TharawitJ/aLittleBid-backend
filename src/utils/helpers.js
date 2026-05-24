@@ -62,7 +62,9 @@ export function isBiddableDuration(auction) {
 }
 
 export function isBiddableAmount(auction, bidAmount) {
-  
+      // check against auction type
+      // to do 
+      
       const highestBid = Number(auction.bids[0]?.amount) || 0;
       const startingPrice = Number(auction.startingPrice) || 0;
       const minIncrement = Number(auction.minIncrement);

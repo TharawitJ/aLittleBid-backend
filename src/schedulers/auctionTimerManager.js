@@ -64,14 +64,14 @@ export function scheduleAuctionEnd(auction) {
     `Scheduling END for auction ${auction.id} in ${Math.round(delay / 1000)}s`
   );
 
-  console.log('endTimers before check', endTimers)
+  // console.log('endTimers before check', endTimers)
 
   if (endTimers.has(auction.id)) {
     clearTimeout(endTimers.get(auction.id));
     endTimers.delete(auction.id);
   }
 
-  console.log('new endTimers after delete', endTimers)
+  // console.log('new endTimers after delete', endTimers)
 
   endTimers.set(auction.id, 
     setTimeout(async () => {
@@ -86,5 +86,5 @@ export function scheduleAuctionEnd(auction) {
     }, delay)
   );
 
-  console.log('endTimers updated as:', endTimers)
+  // console.log('endTimers updated as:', endTimers)
 }
