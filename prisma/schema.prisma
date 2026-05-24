@@ -1,8 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
   provider = "prisma-client-js"
   output   = "../src/generated/prisma"
@@ -10,6 +5,129 @@ generator client {
 
 datasource db {
   provider = "mysql"
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  password  String
+  email     String    @unique
+  firstname String
+  lastname  String
+  phone     String    @unique
+  role      UserRole  @default(BUYER)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt @db.Timestamp(0)
+  username  String    @unique
+  addresses Address[]
+  bids      Bid[]
+  products  Product[]
+}
+
+model Category {
+  id          Int       @id @default(autoincrement())
+  name        String    @unique
+  description String?
+  imageUrl    String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt @db.Timestamp(0)
+  products    Product[]
+}
+
+model Address {
+  id         Int       @id @default(autoincrement())
+  label      String?
+  street     String
+  city       String?
+  state      String?
+  postalCode String
+  country    String
+  isDefault  Boolean   @default(false)
+  userId     Int
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt @db.Timestamp(0)
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  auctions   Auction[]
+
+  @@index([userId], map: "Address_userId_fkey")
+}
+
+model Product {
+  id          Int       @id @default(autoincrement())
+  name        String
+  description String?
+  categoryId  Int?
+  sellerId    Int?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt @db.Timestamp(0)
+  auctions    Auction[]
+  images      Image[]
+  category    Category? @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  sellers     User?     @relation(fields: [sellerId], references: [id], onDelete: Cascade)
+
+  @@index([categoryId], map: "Product_categoryId_fkey")
+  @@index([sellerId], map: "Product_sellerId_fkey")
+}
+
+model Image {
+  id        Int      @id @default(autoincrement())
+  imageUrl  String
+  productId Int?
+  product   Product? @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId], map: "Image_productId_fkey")
+}
+
+model Auction {
+  id                Int           @id @default(autoincrement())
+  productId         Int
+  startTime         DateTime
+  endTime           DateTime
+  startingPrice     Decimal       @db.Decimal(10, 2)
+  reservePrice      Decimal?      @db.Decimal(10, 2)
+  minIncrement      Decimal       @db.Decimal(10, 2)
+  status            AuctionStatus @default(WAITING)
+  type              AuctionType   @default(ENGLISH)
+  shippingAddressId Int?
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt @db.Timestamp(0)
+  product           Product       @relation(fields: [productId], references: [id], onDelete: Cascade)
+  shippingAddress   Address?      @relation(fields: [shippingAddressId], references: [id], onDelete: Cascade)
+  bids              Bid[]
+  payments          Payment[]
+
+  @@index([productId], map: "Auction_productId_fkey")
+  @@index([shippingAddressId], map: "Auction_shippingAddressId_fkey")
+}
+
+model Bid {
+  id        String   @id @default(cuid())
+  bidderId  Int
+  auctionId Int?
+  amount    Decimal  @db.Decimal(10, 2)
+  isWinning Boolean  @default(false)
+  createdAt DateTime @default(now())
+  auction   Auction? @relation(fields: [auctionId], references: [id], onDelete: Cascade)
+  bidder    User     @relation(fields: [bidderId], references: [id], onDelete: Cascade)
+
+  @@index([auctionId])
+  @@index([bidderId])
+}
+
+model Payment {
+  id               String        @id @default(cuid())
+  auctionId        Int?
+  amount           Decimal       @db.Decimal(10, 2)
+  currency         String        @db.Char(3)
+  method           PaymentMethod
+  status           PaymentStatus @default(PENDING)
+  gatewayReference String?       @unique
+  gatewayResponse  Json?
+  paidAt           DateTime?
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt @db.Timestamp(0)
+  auction          Auction?      @relation(fields: [auctionId], references: [id], onDelete: Cascade)
+
+  @@index([auctionId], map: "Payment_auctionId_fkey")
 }
 
 enum AuctionStatus {
@@ -28,8 +146,11 @@ enum UserRole {
 
 enum AuctionType {
   ENGLISH
-  DUTCH
-  SEALED_BID
+  REVERSE
+  SEALED_REVERSE
+  SEALED_ENGLISH
+  // SEALED_VICKREY
+  // DUTCH
 }
 
 enum PaymentStatus {
@@ -47,123 +168,4 @@ enum PaymentMethod {
   PROMPTPAY
   CASH_ON_DELIVERY
   WALLET
-}
-
-model User {
-  id              Int       @id @default(autoincrement())
-  password        String
-  username        String    @unique
-  email           String    @unique
-  firstname       String
-  lastname        String
-  phone           String?   @unique
-  role            UserRole  @default(BUYER)
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt @db.Timestamp(0)
-  products        Product[]
-  addresses       Address[]
-  bids            Bid[]
-}
-
-model Category {
-  id          Int       @id @default(autoincrement())
-  name        String    @unique
-  description String?
-  imageUrl    String?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt @db.Timestamp(0)
-  products    Product[]
-}
-
-model Address {
-  id         Int     @id @default(autoincrement())
-  label      String?
-  street     String
-  city       String?
-  state      String?
-  postalCode String
-  country    String
-  isDefault  Boolean @default(false)
-
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt @db.Timestamp(0)
-  auctions  Auction[]
-  user      User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    Int?
-}
-
-model Product {
-  id          Int       @id @default(autoincrement())
-  name        String
-  description String?
-  category    Category? @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-  categoryId  Int?
-  sellers     User?     @relation(fields: [sellerId], references: [id], onDelete: Cascade)
-  sellerId    Int?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt @db.Timestamp(0)
-  auctions    Auction[]
-  images      Image[]
-}
-
-model Image {
-  id        Int      @id @default(autoincrement())
-  imageUrl  String
-  product   Product? @relation(fields: [productId], references: [id], onDelete: Cascade)
-  productId Int?
-}
-
-model Auction {
-  id                Int           @id @default(autoincrement())
-  product           Product       @relation(fields: [productId], references: [id], onDelete: Cascade)
-  productId         Int
-  startTime         DateTime
-  endTime           DateTime
-  startingPrice     Decimal       @db.Decimal(10, 2)
-  reservePrice      Decimal?      @db.Decimal(10, 2)
-  minIncrement      Decimal       @db.Decimal(10, 2)
-  status            AuctionStatus @default(WAITING)
-  type              AuctionType   @default(ENGLISH)
-  shippingAddress   Address?      @relation(fields: [shippingAddressId], references: [id], onDelete: Cascade)
-  shippingAddressId Int?
-  createdAt         DateTime      @default(now())
-  updatedAt         DateTime      @updatedAt @db.Timestamp(0)
-  payments          Payment[]
-  bids              Bid[]
-
-  // Makes Start Cron fast: Checks status first, then finds the time
-  @@index([status, startTime]) 
-
-   // Makes End Cron fast: Checks status first, then finds the time
-  @@index([status, endTime])
-}
-
-model Bid {
-  id        String   @id @default(cuid())
-  bidder    User     @relation(fields: [bidderId], references: [id], onDelete: Cascade)
-  bidderId  Int
-  auction   Auction? @relation(fields: [auctionId], references: [id], onDelete: Cascade)
-  auctionId Int?
-  amount    Decimal  @db.Decimal(10, 2)
-  isWinning Boolean  @default(false)
-  createdAt DateTime @default(now())
-
-  // for faster read on joins, but eats storage
-  @@index([auctionId])
-  @@index([bidderId])
-}
-
-model Payment {
-  id               String        @id @default(cuid())
-  auction          Auction?      @relation(fields: [auctionId], references: [id], onDelete: Cascade)
-  auctionId        Int?
-  amount           Decimal       @db.Decimal(10, 2)
-  currency         String        @db.Char(3)
-  method           PaymentMethod
-  status           PaymentStatus @default(PENDING)
-  gatewayReference String?       @unique
-  gatewayResponse  Json?
-  paidAt           DateTime?
-  createdAt        DateTime      @default(now())
-  updatedAt        DateTime      @updatedAt @db.Timestamp(0)
 }
