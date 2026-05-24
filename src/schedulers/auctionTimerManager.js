@@ -86,17 +86,5 @@ export function scheduleAuctionEnd(auction) {
     }, delay)
   );
 
-  // const timer = setTimeout(async () => {
-  // try {
-  //   // console.log('auction', auction);
-  //   const newest = await getAuctionById(auction.id);
-  //   const res = await endAuctionAndPickWinner(newest);
-  //   console.log('status updated at:', res);
-  //   } catch (err) {
-  //     console.error("End auction timer failed:", err);
-  //   } 
-  // }, delay);
-
-  // endTimers.set(auction.id, timer);
   console.log('endTimers updated as:', endTimers)
 }
