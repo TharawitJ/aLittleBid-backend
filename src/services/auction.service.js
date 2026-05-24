@@ -49,7 +49,7 @@ export async function getAuctionsWhere(optionsObject) {
 
 export async function getAuctionById(id, tx) {
   const db = tx || prisma;
-  console.log("typeof id", typeof id);
+  // console.log("typeof id", typeof id);
   const result = await db.auction.findUnique({
     where: { id },
     include: {
@@ -121,14 +121,14 @@ export async function createUserAuction(userId, productId, data) {
     throw createError(403, "Auction already exist for this product");
   // THIS DOES NOT ALLOW PRODUCT TO HAVE MANY AUCIONS
 
-  // guard against time
+  // IZZY re allow when testing done guard against time
   // isAuctionableTime(data.startTime, data.endTime);
 
   const auctionData = sanitizeData(data, AUCTION_FIELDS);
   const result = await createAuction(auctionData);
-  console.log('result', result)
+  // console.log('result', result)
 
-  // scheduleAuctionStart(result);
+  // Schedule auction end
   scheduleAuctionEnd(result);
 
   return result;
@@ -140,10 +140,24 @@ export async function updateUserAuction(auctionId, userId, data) {
 
   const auction = await getAuctionById(auctionId);
   await validateProductOwnerAndFetch(auction.productId, userId);
-  if (auction.status !== "WAITING")
-    throw createError(403, "Cannot edit when auction status is pass waiting.");
+
+  // IZZY re allow guard when testing is done
+  // if (auction.status !== "WAITING") throw createError(403, "Cannot edit when auction status is pass waiting.");
 
   const auctionData = sanitizeData(data, UPDATE_AUCTION_FIELDS);
+  console.log('auctionData', auctionData);
+  console.log('NewendTime', auctionData.endTime);
+
+  if (auctionData.endTime) {
+    console.log('we are in end Timer block')
+    // IZZY re allow guard when testing is done
+    // guard against time
+    // const startTime = data.startTime ? data.startTime: auction.startTime
+    // isAuctionableTime(startTime, data.endTime);
+
+    scheduleAuctionEnd(auction);
+  }
+
   const result = await updateAuctionById(auctionId, auctionData);
 
   return result;
@@ -217,6 +231,8 @@ export async function endAuctions() {
   if (auctionsToProcess.length === 0) return;
 
    for (const auction of auctionsToProcess) {
+    console.log('processing ending auction due to cron');
+    console.log('auction ended due to cron', auction);
     endAuctionAndPickWinner(auction);
    }
 }

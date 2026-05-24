@@ -94,6 +94,20 @@ export function isAuctionableTime(startTime, endTime) {
   }
 }
 
+export function convertDateTimeTo24HrTime(dateTime) {
+  const dateObj = new Date(dateTime);
+
+  const options = {
+    hour: "numeric",
+    minute: "numeric",
+    hour12: false
+  };
+
+  const formattedTime = dateObj.toLocaleString(undefined, options);
+
+  return formattedTime;
+}
+
 // query helper
 export function getPrismaOptions(query, searchFields = ['name', 'email']) {
   const { 

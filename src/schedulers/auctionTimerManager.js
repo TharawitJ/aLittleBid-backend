@@ -6,10 +6,6 @@ const auctionTimers = new Map();
 const endTimers = new Map();
 const MAX_TIMEOUT = 2147483647;
 
-// update auction time
-// delete 
-// start time: 12:10
-
 export function scheduleAuctionStart(auction) {
   
 const now = new Date();
@@ -55,9 +51,9 @@ const delay = start - now;
 
 export function scheduleAuctionEnd(auction) {
   
-const now = new Date();
-const end = new Date(auction.endTime);
-const delay = end - now;
+  const now = new Date();
+  const end = new Date(auction.endTime);
+  const delay = end - now;
 
   if (delay <= 0 || delay >= MAX_TIMEOUT) {
     console.log('auction end delay condition not met');
@@ -68,23 +64,39 @@ const delay = end - now;
     `Scheduling END for auction ${auction.id} in ${Math.round(delay / 1000)}s`
   );
 
+  console.log('endTimers before check', endTimers)
+
   if (endTimers.has(auction.id)) {
     clearTimeout(endTimers.get(auction.id));
     endTimers.delete(auction.id);
   }
-  console.log('endTimers', endTimers)
 
-   const timer = setTimeout(async () => {
+  console.log('new endTimers after delete', endTimers)
+
+  endTimers.set(auction.id, 
+    setTimeout(async () => {
     try {
-      console.log('auction', auction);
+      // console.log('auction', auction);
       const newest = await getAuctionById(auction.id);
       const res = await endAuctionAndPickWinner(newest);
-      console.log('set timer at status end', res)
-    } catch (err) {
-      console.error("End auction timer failed:", err);
-    } 
-  }, delay);
+      console.log('status updated at:', res);
+      } catch (err) {
+        console.error("End auction timer failed:", err);
+      } 
+    }, delay)
+  );
 
-    endTimers.set(auction.id, timer);
+  // const timer = setTimeout(async () => {
+  // try {
+  //   // console.log('auction', auction);
+  //   const newest = await getAuctionById(auction.id);
+  //   const res = await endAuctionAndPickWinner(newest);
+  //   console.log('status updated at:', res);
+  //   } catch (err) {
+  //     console.error("End auction timer failed:", err);
+  //   } 
+  // }, delay);
 
+  // endTimers.set(auction.id, timer);
+  console.log('endTimers updated as:', endTimers)
 }
