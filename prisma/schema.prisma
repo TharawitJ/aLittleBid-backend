@@ -16,7 +16,8 @@ enum AuctionStatus {
   WAITING
   ACTIVE
   CANCELLED
-  CLOSED_UNSOLD
+  CLOSED
+  UNSOLD
   SOLD
 }
 

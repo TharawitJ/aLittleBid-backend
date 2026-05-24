@@ -223,57 +223,65 @@ export async function endAuctions() {
 
 export async function endAuctionAndPickWinner(auction) {
     const highestBid = auction.bids ? auction.bids[0] : null;
-
     const io = getIo();
 
-    if (highestBid) {
-      // check that highest bid is higher than reserve price, otherwise return and emit no winner
-      if (highestBid.amount <= auction.reservePrice) {
+    // case no one bids
+    if (!highestBid) {
+        console.log('we are executing no winner block');
         await prisma.auction.update({
           where: { id: auction.id },
-          data: { status: "CLOSED_UNSOLD" },
+          data: { status: "UNSOLD" },
         });
-        io?.to(`${auction.id}`).emit("reserve_not_met", {
+
+        console.log('[server] emitting no winner:', auction.id);
+        io?.to(`${auction.id}`).emit("no_bids", {
+          auctionId: auction.id,
           message:
-            "Auction closed unsold, no winner. Highest bid does not meet reserve price",
+            "Auction closed unsold, no one made a bid.",
         });
-        console.log('reserve not met message is sent');
-      }
-
-      const bid = await prisma.bid.update({
-        where: { id: highestBid.id },
-        data: { isWinning: true },
-      });
-
-      await prisma.auction.update({
-        where: { id: auction.id },
-        data: { status: "CLOSED_UNSOLD" },
-      });
-
-      // emit winner
-      const roomName = `${auction.id}`;
-      const clientsInRoom = io.sockets.adapter.rooms.get(roomName);
-      console.log(`Emitting to room ${roomName}. Number of clients in room:`, clientsInRoom?.size || 0);
-
-      io?.to(roomName).emit("auction_ended", {
-        auctionId: auction.id,
-        bidId: bid.id,
-        winnerId: highestBid.bidderId,
-        amount: highestBid.amount,
-      });
-    } else {
-      await prisma.auction.update({
-        where: { id: auction.id },
-        data: { status: "CLOSED_UNSOLD" },
-      });
-
-      io?.to(`${auction.id}`).emit("auction_ended", {
-        auctionId: auction.id,
-        winnerId: null,
-        amount: null,
-        bidId: null,
-      });
+        console.log('no bid is sent');
+        return;
     }
+    
+    // case reservice price not met
+    if (Number(highestBid.amount) <= Number(auction.reservePrice)) {
+      await prisma.auction.update({
+        where: { id: auction.id },
+        data: { status: "UNSOLD" },
+      });
+
+      console.log('[server] emitting reserve not met to room :', auction.id);
+      io?.to(`${auction.id}`).emit("reserve_not_met", {
+        auctionId: auction.id,
+        message:
+          "Auction closed unsold. Highest bid does not meet the reserve price.",
+      });
+      return;
+    }
+
+    // when there is winner
+    console.log('there is winner')
+    const bid = await prisma.bid.update({
+      where: { id: highestBid.id },
+      data: { isWinning: true },
+    });
+
+    await prisma.auction.update({
+      where: { id: auction.id },
+      data: { status: "CLOSED" },
+    });
+
+    // emit winner
+    const roomName = `${auction.id}`;
+    const clientsInRoom = io.sockets.adapter.rooms.get(roomName);
+    console.log(`Emitting to room ${roomName}. Number of clients in room:`, clientsInRoom?.size || 0);
+
+    io?.to(roomName).emit("auction_ended", {
+      auctionId: auction.id,
+      bidId: bid.id,
+      winnerId: highestBid.bidderId,
+      amount: highestBid.amount,
+    });
 }
 
 // SCHEDULE

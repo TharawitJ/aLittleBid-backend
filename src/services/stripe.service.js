@@ -67,7 +67,7 @@ export async function getOrdersForUser(userId) {
     // Query Auctions where the user has the winning bid
     return prisma.auction.findMany({
         where: {
-            status: { in: ["SOLD", "CLOSED_UNSOLD"] },
+            status: { in: ["SOLD", "CLOSED"] },
             bids: {
                 some: {
                     bidderId: userId,
