@@ -7,7 +7,7 @@ POST {{BASE_URL}}/auth/login HTTP/1.1
 content-type: application/json
 
 {
- "email" : "milk@gmail.com",
+ "email" : "t@gmail.com",
  "password" : "11111111"
 }
 
@@ -17,11 +17,18 @@ content-type: application/json
 Authorization: Bearer {{ACCESS_TOKEN}}
 
 {
-   "name": "final", 
-   "description": "front end hoho", 
-   "categoryId": 1
+   "name": "Mirror mirror", 
+   "description": "Nearly finish haha", 
+   "categoryId": 3
 }
 
+###  Get user
+GET {{BASE_URL}}/users/8
+Authorization: Bearer {{ACCESS_TOKEN}}
+
+###  Get all bids by user
+GET {{BASE_URL}}/bids/user/7
+Authorization: Bearer {{ACCESS_TOKEN}}
 
 ###  Update product data
 PATCH  {{BASE_URL}}/products/113

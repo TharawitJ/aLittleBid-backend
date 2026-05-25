@@ -7,7 +7,7 @@ POST {{BASE_URL}}/auth/login HTTP/1.1
 content-type: application/json
 
 {
- "email" : "milk@gmail.com",
+ "email" : "t@gmail.com",
  "password" : "11111111"
 }
 
@@ -17,13 +17,14 @@ content-type: application/json
 Authorization: Bearer {{ACCESS_TOKEN}}
 
 {
-  "productId": 155,
+  "productId": 54,
   "startTime": "2026-04-29T04:56:13.000Z",
-  "endTime": "2026-04-29T05:17:13.000Z",
-  "startingPrice": 1,
-  "reservePrice": 100,
+  "endTime": "2026-05-24T15:35:52.000Z",
+  "startingPrice": 100,
+  "reservePrice": 2000,
   "minIncrement": 100,
-  "status": "WAITING"
+  "type": "SEALED_ENGLISH",
+  "status": "ACTIVE"
 }
 
 ###  get all auctions
@@ -36,7 +37,7 @@ GET  {{BASE_URL}}/auctions/popular?limit=5
 content-type: application/json
 
 ###  get auction by id
-GET  {{BASE_URL}}/auctions/64
+GET  {{BASE_URL}}/auctions/52
 content-type: application/json
 Authorization: Bearer {{ACCESS_TOKEN}}  
 
@@ -46,17 +47,17 @@ content-type: application/json
 Authorization: Bearer {{ACCESS_TOKEN}}  
 
 ###  DELETE auction by id
-DELETE  {{BASE_URL}}/auctions/77
+DELETE  {{BASE_URL}}/auctions/51
 content-type: application/json
 Authorization: Bearer {{ACCESS_TOKEN}}  
 
 ###  Update auction
-PATCH  {{BASE_URL}}/auctions/39
+PATCH  {{BASE_URL}}/auctions/36
 content-type: application/json
 Authorization: Bearer {{ACCESS_TOKEN}}  
 
 {
-  "endTime": "2026-05-20T08:35:29.000Z"
+  "endTime": "2026-05-24T09:59:52.000Z"
 }
 
 # {
