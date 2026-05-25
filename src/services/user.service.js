@@ -32,7 +32,7 @@ export async function getAllUsersSpecific() {
 export async function getUserById(id) {
   const result = await prisma.user.findUnique({
     where: { id },
-    include: { addresses: true },
+    include: { addresses: true , wallet:true},
   });
   if (!result) throw createError(404, "Invalid user");
   return result;
@@ -125,4 +125,4 @@ export async function updateUserAddress(userId, addressId, data) {
   return result;
 }
 
-
+//  update wallet

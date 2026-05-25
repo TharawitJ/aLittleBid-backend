@@ -32,6 +32,11 @@ export const createUser = async (dataObj) => {
           isDefault: true,
         },
       },
+      wallet: {
+        create: {
+          amount: 0,
+        },
+      },
     },
     include: {
       addresses: true,

@@ -1,5 +1,6 @@
 import Stripe from "stripe";
 import prisma from "../lib/prismaClient.js";
+import { depositMoney } from "./wallet.service.js";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
@@ -7,6 +8,7 @@ export async function createStripeCheckoutSession(auctionId, data) {
     const session = await stripe.checkout.sessions.create({
         ui_mode: "embedded_page",
         payment_method_types: ['card'],
+        customer_email: data.email,
         line_items: [
             {
                 price_data: {
@@ -19,6 +21,10 @@ export async function createStripeCheckoutSession(auctionId, data) {
         ],
         mode: 'payment',
         return_url: `${process.env.CLIENT_URL}/complete?session_id={CHECKOUT_SESSION_ID}`,
+        metadata: {
+            auctionId: auctionId.toString(),
+            type: 'AUCTION'
+        }
     });
 
     // Task B1: Insert a Payment row at session creation
@@ -36,11 +42,60 @@ export async function createStripeCheckoutSession(auctionId, data) {
     return session;
 }
 
+export async function createTopUpCheckoutSession(userId, amount, email) {
+    const session = await stripe.checkout.sessions.create({
+        payment_method_types: ['card'],
+        customer_email: email,
+        line_items: [
+            {
+                price_data: {
+                    currency: 'thb',
+                    product_data: { 
+                        name: 'Wallet Top-up',
+                        description: `Deposit for user ID: ${userId}`
+                    },
+                    unit_amount: Math.round(Number(amount) * 100),
+                },
+                quantity: 1,
+            },
+        ],
+        mode: 'payment',
+        success_url: `${process.env.CLIENT_URL}/user_profile?status=success&session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${process.env.CLIENT_URL}/user_profile?status=cancel`,
+        metadata: {
+            userId: userId.toString(),
+            type: 'TOPUP',
+            amount: amount.toString()
+        }
+    });
+
+    // Create a Payment record for the top-up
+    await prisma.payment.create({
+        data: {
+            amount: Number(amount),
+            currency: "THB",
+            method: "CREDIT_CARD",
+            status: "PENDING",
+            gatewayReference: session.id,
+        },
+    });
+
+    return session;
+}
+
 export async function confirmStripeCheckoutSession(sessionId) {
     const session = await stripe.checkout.sessions.retrieve(sessionId);
 
     // Stripe says paid? Update our row.
     if (session.payment_status === "paid") {
+        const payment = await prisma.payment.findUnique({
+            where: { gatewayReference: sessionId }
+        });
+
+        if (!payment || payment.status === "SUCCESS") {
+            return { status: "SUCCESS", payment };
+        }
+
         const updated = await prisma.payment.update({
             where: { gatewayReference: sessionId },
             data: {
@@ -50,11 +105,19 @@ export async function confirmStripeCheckoutSession(sessionId) {
             },
         });
 
-        // Update auction status to SOLD
-        await prisma.auction.update({
-            where: { id: updated.auctionId },
-            data: { status: "SOLD" }
-        });
+        const type = session.metadata?.type;
+
+        if (type === 'AUCTION') {
+            // Update auction status to SOLD
+            await prisma.auction.update({
+                where: { id: updated.auctionId },
+                data: { status: "SOLD" }
+            });
+        } else if (type === 'TOPUP') {
+            const userId = parseInt(session.metadata.userId);
+            const amount = parseInt(session.metadata.amount);
+            await depositMoney(userId, amount);
+        }
 
         return { status: "SUCCESS", payment: updated };
     }
