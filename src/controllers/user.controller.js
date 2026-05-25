@@ -1,7 +1,8 @@
 import { createAddress, deleteUserById, getAllUsers, getAllUsersSpecific, getUserById, updateUserAddress, updateUserById } from "../services/user.service.js";
 
 export async function getUserController(req, res, next) {
-  const { id } = req.user;
+  const { id } = req.params;
+
   try {
     const responses = await getUserById(id);
 

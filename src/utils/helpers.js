@@ -38,10 +38,7 @@ export async function validateBidOwnerAndFetch(bidId, userId) {
   const bid = await getBidById(bidId);
 
   if (bid.bidderId !== userId)
-    throw createError(
-      403,
-      "Access denied: Bid owner permissions required.",
-    );
+    throw createError(403, "Access denied: Bid owner permissions required.");
   return bid;
 }
 
@@ -49,7 +46,10 @@ export function isBiddableDuration(auction) {
   const now = new Date();
 
   if (auction.status !== "ACTIVE") {
-    throw createError(400, `Cannot bid now. This auction is currently ${auction.status.toLowerCase()}.`);
+    throw createError(
+      400,
+      `Cannot bid now. This auction is currently ${auction.status.toLowerCase()}.`,
+    );
   }
 
   if (now < auction.startTime) {
@@ -62,20 +62,32 @@ export function isBiddableDuration(auction) {
 }
 
 export function isBiddableAmount(auction, bidAmount) {
-  
-      const highestBid = Number(auction.bids[0]?.amount) || 0;
-      const startingPrice = Number(auction.startingPrice) || 0;
-      const minIncrement = Number(auction.minIncrement);
-  
-      const currentHighestPrice = highestBid || startingPrice;
-       const minimumBid = currentHighestPrice + minIncrement;
-      
+  if (auction.type === "ENGLISH") {
+    const highestBid = Number(auction.bids[0]?.amount) || 0;
+    const startingPrice = Number(auction.startingPrice) || 0;
+    const minIncrement = Number(auction.minIncrement);
 
-      if (bidAmount < minimumBid) {
-        throw  createError(400, `Bid must be higher than current price and must increase by ${minIncrement} THB.`);
-      }
+    const currentHighestPrice = highestBid || startingPrice;
+    const minimumBid = currentHighestPrice + minIncrement;
 
-      return true;
+    if (bidAmount < minimumBid) {
+      throw createError(
+        400,
+        `Bid must be higher than current price and must increase by ${minIncrement} THB.`,
+      );
+    }
+    return true;
+  }
+
+  // IZZY to do 
+  // if (auction.type === "SEALED_ENGLISH") {
+  //   // check against current user's highest bid
+  //   // must be higher than current user's highest bid
+  // }
+  //  if (auction.type === "REVERSE") { // to do check bid must be lower than current lowest bid }
+  //  if (auction.type === "SEALED REVERSE") { // to do check bid must be lower than current user's lowest bid }
+
+  return true;
 }
 
 export function isAuctionableTime(startTime, endTime) {
@@ -94,14 +106,28 @@ export function isAuctionableTime(startTime, endTime) {
   }
 }
 
+export function convertDateTimeTo24HrTime(dateTime) {
+  const dateObj = new Date(dateTime);
+
+  const options = {
+    hour: "numeric",
+    minute: "numeric",
+    hour12: false,
+  };
+
+  const formattedTime = dateObj.toLocaleString(undefined, options);
+
+  return formattedTime;
+}
+
 // query helper
-export function getPrismaOptions(query, searchFields = ['name', 'email']) {
-  const { 
-    page = 1, 
-    limit = 10, 
-    sortBy = 'createdAt', 
-    sortOrder = 'desc', 
-    search = '', 
+export function getPrismaOptions(query, searchFields = ["name", "email"]) {
+  const {
+    page = 1,
+    limit = 10,
+    sortBy = "createdAt",
+    sortOrder = "desc",
+    search = "",
     ...filters // Captures everything else as filters
   } = query;
 
@@ -119,7 +145,7 @@ export function getPrismaOptions(query, searchFields = ['name', 'email']) {
   // 3. Add Global Search (Partial matches)
   if (search) {
     where.OR = searchFields.map((field) => ({
-      [field]: { contains: search, mode: 'insensitive' },
+      [field]: { contains: search, mode: "insensitive" },
     }));
   }
 
@@ -142,4 +168,3 @@ export function getPrismaOptions(query, searchFields = ['name', 'email']) {
 
 //   return { data, total };
 // }
-

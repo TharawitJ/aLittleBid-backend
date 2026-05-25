@@ -2,8 +2,9 @@ import prisma from "../lib/prismaClient.js";
 import createError from "http-errors";
 import { getUserById } from "./user.service.js";
 import { getAuctionById } from "./auction.service.js";
-import { isBiddableAmount, isBiddableDuration, sanitizeData, validateBidOwnerAndFetch } from "../utils/helpers.js";
+import { convertDateTimeTo24HrTime, isBiddableAmount, isBiddableDuration, sanitizeData, validateBidOwnerAndFetch } from "../utils/helpers.js";
 import { getIo } from "../sockets/index.js";
+import { scheduleAuctionEnd } from "../schedulers/auctionTimerManager.js";
 
 export const BID_FIELDS = [
   "bidderId",
@@ -88,7 +89,7 @@ export async function placeBid(userId, auctionId, data) {
 
       const bid = await createBid(bidData, tx);
 
-       // await applyAntiSnipe(auction, tx);
+      await applyAntiSnipe(auction, tx);
 
     return bid;
 
@@ -155,16 +156,23 @@ export async function applyAntiSnipe(auction, tx) {
 
   const newEndTime = new Date(now.getTime() + EXTENSION_MS);
 
+  // console.log('new end time is', convertDateTimeTo24HrTime(newEndTime));
+
   await tx.auction.update({
     where: { id: auction.id },
     data: { endTime: newEndTime },
   });
-
+  
   // Emit outside transaction to auction
   const io = getIo();
   io?.to(`${auction.id}`).emit("end_time_extended", {
     newEndTime: newEndTime.toISOString(),
+    auctionId: auction.id,
   });
+  
+  // get updated auction
+  const updatedAuction = await getAuctionById(auction.id, tx);
+  scheduleAuctionEnd(updatedAuction);
 
   return newEndTime;
 }

@@ -1,7 +1,7 @@
 import cron from "node-cron";
 import { endAuctions, startAuctions } from "../services/auction.service.js";
 
-export const auctionStatusUpdateTask = cron.schedule("0 * * * * *", async () => {
+export const auctionStatusUpdateTask = cron.schedule("* * * * *", async () => {
     console.log("Auction cron running:", new Date().toLocaleTimeString());
 
     try {
