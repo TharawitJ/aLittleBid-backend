@@ -238,6 +238,11 @@ export async function endAuctions() {
 }
 
 export async function endAuctionAndPickWinner(auction) {
+  // IZZY to do
+  // if (auction.type === "REVERSE"  || auction.type === "SEALED_REVERSE" || auction.type === "DUTCH") { // pick lowest price}
+  // if (auction.type === "SEALED_VICKREY" ) { // pick second highest price}
+  
+  // if (auction.type === "ENGLISH" || auction.type === "SEALED_ENGLISH" ) { // pick highest price}
     const highestBid = auction.bids ? auction.bids[0] : null;
     const io = getIo();
 
