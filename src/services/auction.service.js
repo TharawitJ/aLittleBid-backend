@@ -148,17 +148,17 @@ export async function updateUserAuction(auctionId, userId, data) {
 
   const auctionData = sanitizeData(data, UPDATE_AUCTION_FIELDS);
 
-  if (auctionData.endTime) {
+  const result = await updateAuctionById(auctionId, auctionData);
+
+   if (auctionData.endTime) {
     console.log('we are in end Timer block')
     // IZZY re allow guard when testing is done
     // guard against time
     // const startTime = data.startTime ? data.startTime: auction.startTime
     // isAuctionableTime(startTime, data.endTime);
 
-    scheduleAuctionEnd(auction);
+    scheduleAuctionEnd(result);
   }
-
-  const result = await updateAuctionById(auctionId, auctionData);
 
   return result;
 }
