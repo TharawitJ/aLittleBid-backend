@@ -5,6 +5,9 @@ import { getAuctionById } from "./auction.service.js";
 import { convertDateTimeTo24HrTime, isBiddableAmount, isBiddableDuration, sanitizeData, validateBidOwnerAndFetch } from "../utils/helpers.js";
 import { getIo } from "../sockets/index.js";
 import { scheduleAuctionEnd } from "../schedulers/auctionTimerManager.js";
+import { Redis } from "ioredis";
+
+const redis = new Redis();
 
 export const BID_FIELDS = [
   "bidderId",
@@ -68,6 +71,8 @@ export async function placeBid(userId, auctionId, data) {
   await getUserById(userId);
   const bidAmount = data.amount;
 
+  // redis logic
+  
   return await prisma.$transaction(async (tx) => {
    
       const auction = await getAuctionById(auctionId, tx);
